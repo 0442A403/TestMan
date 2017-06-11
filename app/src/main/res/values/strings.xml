@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">TestMan</string>
+    <string name="description">Пройти тесты \n легко и быстро</string>
+    <string name="login_with">Войти с помощью</string>
+    <string name="exit">Выйти</string>
+    <string name="my_tests">Мои тесты</string>
+    <string name="create_test">Создать тест</string>
+    <string name="search_test">Найти тест</string>
+    <string name="test_man">Test Man</string>
 </resources>
