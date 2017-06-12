@@ -10,10 +10,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.view.Window;
-import android.webkit.CookieManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -162,10 +160,10 @@ public class LoginActivity extends AppCompatActivity {
             Log.d("JSONObject", str);
             Toast.makeText(LoginActivity.this, str, Toast.LENGTH_SHORT).show();
             pDialog.dismiss();
-//            Intent intent = new Intent(LoginActivity.this, SearchActivity.class);
-//            intent.putExtra("JSONObject", str);
-//            startActivity(intent);
-//            finish();
+            Intent intent = new Intent(LoginActivity.this, BaseActivity.class);
+            intent.putExtra("JSONObject", str);
+            startActivity(intent);
+            finish();
         }
     }
 }
