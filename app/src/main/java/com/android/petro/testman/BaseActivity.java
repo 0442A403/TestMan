@@ -40,9 +40,8 @@ public class BaseActivity extends AppCompatActivity {
 
         NavigationView upperNavigationView = (NavigationView) findViewById(R.id.upper_nav_view);
         NavigationView lowerNavigationView = (NavigationView) findViewById(R.id.exit_nav_view);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
 
-        navigationView.setCheckedItem(R.id.search_test_item);
+        upperNavigationView.setCheckedItem(R.id.search_test_item);
         upperNavigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -51,14 +50,17 @@ public class BaseActivity extends AppCompatActivity {
                             case R.id.search_test_item:
                                 changeFragment(new SearchFragment());
                                 drawerLayout.closeDrawer(Gravity.START);
+                                setTitle("Найти тест");
                                 break;
                             case R.id.create_test_item:
-                                changeFragment(new CreateFragment());
+                                changeFragment(new CreateFragment(getSupportFragmentManager()));
                                 drawerLayout.closeDrawer(Gravity.START);
+                                setTitle("Создать тест");
                                 break;
                             case R.id.my_tests_item:
                                 changeFragment(new MyTestsFragment());
                                 drawerLayout.closeDrawer(Gravity.START);
+                                setTitle("Мои тесты");
                                 break;
                         }
                         return true;

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">TestMan</string>
-    <string name="description">Пройти тесты \n легко и быстро</string>
+    <string name="testman_description">Пройти тесты \n легко и быстро</string>
+
     <string name="login_with">Войти с помощью</string>
     <string name="exit">Выйти</string>
     <string name="my_tests">Мои тесты</string>
@@ -9,4 +10,5 @@
     <string name="test_man">Test Man</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="name">Название</string>
+    <string name="description">Описание</string>
 </resources>
