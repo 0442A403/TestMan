@@ -1,10 +1,8 @@
 package com.android.petro.testman;
 
-
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,28 +14,26 @@ import android.widget.ImageView;
 
 import java.util.ArrayList;
 
-
 /**
  * Fragment with tasks
  */
+
 public class TasksFragment extends Fragment {
-    static FragmentActivity activity;
-    static LayoutInflater layoutInflater;
-    static TaskAdapter taskAdapter;
+
+    TaskAdapter taskAdapter;
     FloatingActionButton floatButton;
+    ArrayList<String> questions = new ArrayList<>();
+    ArrayList<ArrayList<String>> answersArray = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tasks, container, false);
 
-        activity = getActivity();
-        layoutInflater = inflater;
-
         RecyclerView taskRecycle = (RecyclerView) view.findViewById(R.id.create_recycle_view);
         taskAdapter = new TaskAdapter();
         taskRecycle.setAdapter(taskAdapter);
-        taskRecycle.setLayoutManager(new LinearLayoutManager(activity));
+        taskRecycle.setLayoutManager(new LinearLayoutManager(getActivity()));
         addTask();
 
         floatButton = (FloatingActionButton) view.findViewById(R.id.add_task_button);
@@ -51,16 +47,31 @@ public class TasksFragment extends Fragment {
         return view;
     }
 
-    private static void addTask() {
+    private void addTask() {
+        saveData();
         taskAdapter.addTask();
         taskAdapter.notifyDataSetChanged();
     }
 
+    private void saveData() {
+        questions.clear();
+        answersArray.clear();
+        Log.i("saveData", "start");
+        for (TaskHolder holder : taskAdapter.tasks) {
+            questions.add(holder.question.getText().toString());
+            Log.i("saveData", holder.question.getText().toString());
+            holder.saveData();
+            answersArray.add(holder.answerStrings);
+            for (String str : answersArray.get(answersArray.size() - 1))
+                Log.i("saveData", str);
+        }
+    }
 
-    private static class TaskAdapter extends RecyclerView.Adapter<TaskHolder> {
+
+    private class TaskAdapter extends RecyclerView.Adapter<TaskHolder> {
 
         ArrayList<TaskHolder> tasks = new ArrayList<>();
-        static int taskSize = 0;
+        int taskSize = 0;
 
         @Override
         public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -72,8 +83,32 @@ public class TasksFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(final TaskHolder holder, int position) {
+        public void onBindViewHolder(TaskHolder holder, int position) {
+            if (position < questions.size()) {
+//                tasks.set(position, holder);
+//                holder.answerStrings.clear();
+//                holder.question.setText(questions.get(position));
+//                holder.answerAdapter.answerSize = questions.size();
+//                holder.answerAdapter.notifyDataSetChanged();
+//                holder.answerStrings = answersArray.get(position);
+//                holder.answerAdapter.notifyDataSetChanged();
 
+//                for (int i = 0; i < 2; i++)
+//                    holder.addAnswer();
+                tasks.set(position, holder);
+                holder.answerAdapter.answers.clear();
+                for (int i = 0; i < answersArray.get(position).size(); i++)
+                    holder.addAnswer();
+                holder.answerStrings = answersArray.get(position);
+                holder.answerAdapter.notifyDataSetChanged();
+            }
+            else {
+                tasks.add(holder);
+                holder.question.setText("");
+                holder.answerAdapter.answers.clear();
+                holder.answerAdapter.answerSize = 2;
+                holder.answerAdapter.notifyDataSetChanged();
+            }
         }
 
         @Override
@@ -86,19 +121,18 @@ public class TasksFragment extends Fragment {
         }
     }
 
-    static class TaskHolder extends RecyclerView.ViewHolder {
+    class TaskHolder extends RecyclerView.ViewHolder {
 
         EditText question;
         RecyclerView answerRecyclerView;
         AnswerAdapter answerAdapter;
         ImageView addTaskIcon;
-        static ArrayList<String> answerStrings = new ArrayList<>();
+        ArrayList<String> answerStrings = new ArrayList<>();
 
         TaskHolder(View itemView) {
             super(itemView);
             question = (EditText) itemView.findViewById(R.id.question);
             answerRecyclerView = (RecyclerView) itemView.findViewById(R.id.answer_recycle_view);
-            answerRecyclerView.setHasFixedSize(true);
             answerAdapter = new AnswerAdapter();
             answerRecyclerView.setAdapter(answerAdapter);
             answerRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
@@ -114,26 +148,22 @@ public class TasksFragment extends Fragment {
             });
         }
 
-        void setData() {
+        void saveData() {
             answerStrings.clear();
-            for (AnswerHolder holder : answerAdapter.answers)
-                answerStrings.add(holder.answer.getText().toString());
+            for (EditText holder : answerAdapter.answers)
+                answerStrings.add(holder.getText().toString());
         }
 
         void addAnswer() {
-            Log.i("UserInformation", "Checkpoint 1");
-            setData();
-            Log.i("UserInformation", "Checkpoint 2");
+            saveData();
             answerAdapter.addAnswer();
-            Log.i("UserInformation", "Checkpoint 3");
             answerAdapter.notifyDataSetChanged();
-//            answerAdapter.notify();
         }
 
-        static class AnswerAdapter extends RecyclerView.Adapter<AnswerHolder> {
+        class AnswerAdapter extends RecyclerView.Adapter<AnswerHolder> {
 
-            ArrayList<AnswerHolder> answers = new ArrayList<>();
             int answerSize = 0;
+            ArrayList<EditText> answers = new ArrayList<>();
 
             @Override
             public void onViewRecycled(AnswerHolder holder) {
@@ -144,40 +174,28 @@ public class TasksFragment extends Fragment {
             public AnswerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 View v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.creating_answer_pattern, parent, false);
-                AnswerHolder holder = new AnswerHolder(v);
-                answers.add(holder);
-                Log.i("UserInformation",
-                        "Answer Holders: " + answers.size() + "\nAnswer Size: " + answerSize
-                                + "\nAnswer Strings: " + answerStrings.size());
-                return holder;
+                return new AnswerHolder(v);
             }
 
             @Override
             public void onBindViewHolder(AnswerHolder holder, int position) {
-                if (position != answerStrings.size()) {
+                if (position < answerStrings.size()) {
                     holder.answer.setText(answerStrings.get(position));
-                    Log.i("onBindViewHolder", "Holder number " + position + " with " +
-                            answerStrings.get(position));
+                    answers.set(position, holder.answer);
                 }
                 else {
-                    Log.i("onBindViewHolder", "empty answerStrings");
+                    answers.add(holder.answer);
+                    holder.answer.setText("");
                 }
             }
 
             @Override
-            public int getItemCount() {
-                return answerSize;
-            }
+            public int getItemCount() { return answerSize; }
 
-            void addAnswer() {
-                answerSize++;
-                Log.i("UserInformation", "FROM ADDANSWER \n" +
-                        "Answer Holders: " + answers.size() + "\nAnswer Size: " + answerSize
-                        + "\nAnswer Strings: " + answerStrings.size());
-            }
+            void addAnswer() { answerSize++; }
         }
 
-        static class AnswerHolder extends RecyclerView.ViewHolder {
+        class AnswerHolder extends RecyclerView.ViewHolder {
             EditText answer;
             View removeIcon;
             AnswerHolder(View viewItem) {
@@ -186,8 +204,6 @@ public class TasksFragment extends Fragment {
                 removeIcon = itemView.findViewById(R.id.remove_answer);
             }
         }
-
-
     }
 
 }
