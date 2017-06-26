@@ -1,4 +1,4 @@
-package com.android.petro.testman;
+package com.android.petro.testman.Fragments;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -6,10 +6,16 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import com.android.petro.testman.R;
+import com.android.petro.testman.Support.TasksClass;
 
 import java.util.ArrayList;
 
@@ -20,7 +26,6 @@ import java.util.ArrayList;
 public class TasksFragment extends Fragment {
 
     private TaskAdapter taskAdapter;
-    private FloatingActionButton floatButton;
     private ArrayList<String> questions = new ArrayList<>();
     private ArrayList<ArrayList<String>> answersArray = new ArrayList<>();
     private ArrayList<TaskHolder> tasks = new ArrayList<>();
@@ -36,7 +41,7 @@ public class TasksFragment extends Fragment {
         taskRecycle.setLayoutManager(new LinearLayoutManager(getActivity()));
         addTask();
 
-        floatButton = (FloatingActionButton) view.findViewById(R.id.add_task_button);
+        FloatingActionButton floatButton = (FloatingActionButton) view.findViewById(R.id.add_task_button);
         floatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,15 +57,29 @@ public class TasksFragment extends Fragment {
         taskAdapter.notifyItemChanged(taskAdapter.getItemCount()-1);
     }
 
+    public TasksClass getData() {
+        saveData();
+        return new TasksClass(questions, answersArray);
+    }
+
     private void saveData() {
         questions.clear();
         answersArray.clear();
+        StringBuilder str = new StringBuilder();
+        int i = 0;
         for (TaskHolder holder : tasks) {
             questions.add(holder.getQuestion());
+            holder.answerAdapter.notifyDataSetChanged();
             answersArray.add(holder.getAnswers());
-        }
-    }
 
+            Log.i("Application Information", holder.answers.size() + " " + holder.answerAdapter.answerSize);
+            str.append("Question ").append(i).append(" ").append(questions.get(i)).append("\n");
+            for (String string : answersArray.get(i))
+                str.append("Answer - ").append(string).append("\n");
+            i++;
+        }
+        Log.i("Application Information", str.toString());
+    }
 
     private class TaskAdapter extends RecyclerView.Adapter<TaskHolder> {
 
@@ -77,8 +96,13 @@ public class TasksFragment extends Fragment {
         public void onBindViewHolder(TaskHolder holder, int position) {
             if (position >= questions.size()) {
                 tasks.add(holder);
-                holder.setPosition(position);
+                holder.clearData();
             }
+            else {
+                holder.setData(position);
+                tasks.set(position, holder);
+            }
+            holder.setPosition(position);
         }
 
         @Override
@@ -89,9 +113,57 @@ public class TasksFragment extends Fragment {
         void addTask() {
             taskSize++;
         }
+
+        void removeTask(int position) {
+//            tasks.remove(position);
+//
+//            StringBuilder strb = new StringBuilder("Before saveData()\n");
+//            int i = 0;
+//            for (TaskHolder holder : tasks) {
+//                questions.add(holder.getQuestion());
+//                answersArray.add(holder.getAnswers());
+//                strb.append("Question ").append(i).append(" ").append(questions.get(i)).append("\n");
+//                for (String string : answersArray.get(i))
+//                    strb.append("Answer - ").append(string).append("\n");
+//            }
+//            Log.i("Application Information", strb.toString());
+//
+//
+//            saveData();
+//
+//
+//            StringBuilder stringBuffer = new StringBuilder();
+//            i = 0;
+//            for (TaskHolder holder : tasks) {
+//                stringBuffer.append("TaskHolder number ").append(i).append(":\n");
+//                stringBuffer.append("answers.size() - ").append(holder.answers.size()).append("\n");
+//                stringBuffer.append("answerSize - ").append(holder.answerAdapter.answerSize).append("\n");
+//                stringBuffer.append("answerStrings.size() - ").append(holder.answerStrings.size()).append("\n");
+//                stringBuffer.append("position - ").append(holder.position).append("\n");
+//                stringBuffer.append("Question - ").append(holder.getQuestion()).append("\n");
+//                int j = 0;
+//                for (String str : holder.getAnswers()) {
+//                    stringBuffer.append("Answer ").append(j).append(" - ").append(str).append("\n");
+//                    j++;
+//                }
+//                i++;
+//            }
+//            Log.i("Application Information", stringBuffer.toString());
+//
+//
+//            taskSize--;
+//            taskAdapter.notifyDataSetChanged();
+            tasks.remove(position);
+            taskSize--;
+            if (taskSize == 0)
+                addTask();
+            notifyItemRemoved(position);
+            for (int i = 0; i < tasks.size(); i++)
+                tasks.get(i).setPosition(i);
+        }
     }
 
-    class TaskHolder extends RecyclerView.ViewHolder {
+    class TaskHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
         private EditText question;
         private RecyclerView answerRecyclerView;
@@ -108,8 +180,7 @@ public class TasksFragment extends Fragment {
             answerRecyclerView.setAdapter(answerAdapter);
             answerRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
 
-            for (int i = 0; i < 2; i++)
-                addAnswer();
+            itemView.setOnCreateContextMenuListener(this);
 
             itemView.findViewById(R.id.add_answer_button).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -127,6 +198,13 @@ public class TasksFragment extends Fragment {
             return question.getText().toString();
         }
 
+        void setData(int position) {
+            question.setText(questions.get(position));
+            answerStrings = answersArray.get(position);
+            answerAdapter.setSize(answerStrings.size());
+            answerAdapter.notifyDataSetChanged();
+        }
+
         ArrayList<String> getAnswers() {
             saveData();
             return answerStrings;
@@ -136,8 +214,9 @@ public class TasksFragment extends Fragment {
             answerStrings.clear();
             for (AnswerHolder answer : answers) {
                 answerStrings.add(answer.getData());
-                Log.v("saveData", answer.getData());
+                Log.d("debugging", "a - " + answer.getData());
             }
+            Log.d("debugging", "q - " + getQuestion());
         }
 
         void addAnswer() {
@@ -145,14 +224,33 @@ public class TasksFragment extends Fragment {
             answerAdapter.notifyItemChanged(answerAdapter.getItemCount() - 1);
         }
 
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            MenuItem delete = menu.add(Menu.NONE, 0, 0, "Удалить");
+            MenuItem addImage = menu.add(Menu.NONE, 1, 1, "Добавить изображение");
+
+            delete.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    taskAdapter.removeTask(position);
+                    return false;
+                }
+            });
+        }
+
+        void clearData() {
+            answerStrings.clear();
+            question.setText("");
+            answerAdapter.setDefaultSize();
+            answerAdapter.notifyDataSetChanged();
+        }
+
         class AnswerAdapter extends RecyclerView.Adapter<AnswerHolder> {
 
             private int answerSize = 0;
 
             @Override
-            public void onViewRecycled(AnswerHolder holder) {
-                super.onViewRecycled(holder);
-            }
+            public void onViewRecycled(AnswerHolder holder) { super.onViewRecycled(holder); }
 
             @Override
             public AnswerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -169,7 +267,10 @@ public class TasksFragment extends Fragment {
                 }
                 else {
                     holder.setData(answerStrings.get(position));
-                    answers.set(position, holder);
+                    if (position < answers.size())
+                        answers.set(position, holder);
+                    else
+                        answers.add(holder);
                 }
                 holder.setPosition(position);
             }
@@ -179,10 +280,16 @@ public class TasksFragment extends Fragment {
 
             void addAnswer() { answerSize++; }
 
+            void setSize(int size) { answerSize = size; }
+
+            void setDefaultSize() { answerSize = 2; }
+
             void removeAnswer(int position) {
                 answers.remove(position);
                 saveData();
                 answerSize--;
+                if (answerSize == 1)
+                    addAnswer();
                 notifyDataSetChanged();
             }
         }

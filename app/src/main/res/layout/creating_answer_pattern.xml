@@ -5,15 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <android.support.v7.widget.AppCompatRadioButton
+        android:id="@+id/radio_button__answer_pattern"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:buttonTint="@color/colorAccent" />
+
     <EditText
         android:id="@+id/patterns_answer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         app:layout_constraintRight_toLeftOf="@+id/remove_answer"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/radio_button__answer_pattern"
         app:layout_constraintTop_toTopOf="parent"
-        android:theme="@style/EditTextStyle"/>
+        android:inputType="text"/>
 
     <ImageView
         android:id="@+id/remove_answer"

@@ -1,4 +1,4 @@
-package com.android.petro.testman;
+package com.android.petro.testman.Activities;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -15,6 +15,8 @@ import android.view.Window;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+
+import com.android.petro.testman.R;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

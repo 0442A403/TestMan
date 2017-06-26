@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="@color/white"
+        android:theme="@style/AppBarStyle"/>
 
     <android.support.v4.widget.DrawerLayout android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
@@ -34,7 +35,8 @@
             android:id="@+id/navigation_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="start">
+            android:layout_gravity="start"
+            android:theme="@style/AppBarStyle">
 
             <android.support.design.widget.NavigationView
                 android:id="@+id/upper_nav_view"
@@ -42,14 +44,16 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="top"
                 app:menu="@menu/main_navigation"
-                app:headerLayout="@layout/nav_header"/>
+                app:headerLayout="@layout/nav_header"
+                android:theme="@style/AppBarStyle"/>
 
             <android.support.design.widget.NavigationView
                 android:id="@+id/exit_nav_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                app:menu="@menu/lower_navigation"/>
+                app:menu="@menu/lower_navigation"
+                android:theme="@style/AppBarStyle"/>
 
         </android.support.design.widget.NavigationView>
 

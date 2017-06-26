@@ -1,5 +1,4 @@
-package com.android.petro.testman;
-
+package com.android.petro.testman.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,16 +9,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.petro.testman.R;
+import com.android.petro.testman.Support.CreateCallBack;
+import com.android.petro.testman.Support.SettingsClass;
+import com.android.petro.testman.Support.TestClass;
+
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * Fragment for creating new tests
  */
-public class CreateFragment extends Fragment {
+
+public class CreateFragment extends Fragment implements CreateCallBack {
     FragmentManager fragmentManager = null;
     ViewPager pager = null;
+    TasksFragment tasksFragment;
+    SettingsFragment settingsFragment;
 
     public CreateFragment(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
@@ -38,10 +44,17 @@ public class CreateFragment extends Fragment {
 
     private void setUpViaAdapter() {
         Adapter adapter = new Adapter(fragmentManager);
-        adapter.addFragment(new LabelFragment());
-        adapter.addFragment(new TasksFragment());
-        adapter.addFragment(new SettingsFragment());
+        tasksFragment = new TasksFragment();
+        settingsFragment = new SettingsFragment(this);
+        adapter.addFragment(tasksFragment);
+        adapter.addFragment(settingsFragment);
         pager.setAdapter(adapter);
+    }
+
+    @Override
+    public void onTestSave(SettingsClass settings) {
+        TestClass test = new TestClass(settings, tasksFragment.getData());
+        test.save();
     }
 
     private class Adapter extends FragmentStatePagerAdapter {
@@ -57,5 +70,7 @@ public class CreateFragment extends Fragment {
 
         void addFragment(Fragment fragment) { mFragmentList.add(fragment); }
     }
+
+
 
 }

@@ -1,4 +1,4 @@
-package com.android.petro.testman;
+package com.android.petro.testman.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.webkit.CookieManager;
+
+import com.android.petro.testman.Fragments.CreateFragment;
+import com.android.petro.testman.Fragments.MyTestsFragment;
+import com.android.petro.testman.Fragments.SearchFragment;
+import com.android.petro.testman.R;
 
 /**
  * Created by petro on 11.06.2017.

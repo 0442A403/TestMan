@@ -3,39 +3,232 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.android.petro.testman.SettingsFragment">
+    tools:context="com.android.petro.testman.Fragments.SettingsFragment">
 
-    <android.support.percent.PercentRelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.constraint.ConstraintLayout
+        <android.support.percent.PercentRelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/test_name__creating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_marginStartPercent="7.5%"
+                app:layout_marginEndPercent="7.5%"
+                android:layout_marginTop="16dp"
+                android:hint="@string/fill_name"
+                android:textSize="20sp"/>
 
             <TextView
+                android:id="@+id/mark_begins"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
                 android:text="@string/mark_begins"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="8dp"
                 android:textSize="20sp"
-                android:id="@+id/mark_begins"
-                app:layout_constraintHorizontal_bias="0.5" />
+                android:layout_below="@id/test_name__creating"/>
 
-            <!--<SeekBar-->
-                <!--app:layout_widthPercent="75%"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--app:layout_constraintLeft_toLeftOf="parent"-->
-                <!--app:layout_constraintRight_toRightOf="parent"-->
-                <!--android:layout_marginTop="16dp"-->
-                <!--app:layout_constraintTop_toBottomOf="@+id/mark_begins"-->
-                <!--app:layout_constraintHorizontal_bias="0.125" />-->
+            <android.support.percent.PercentRelativeLayout
+                android:id="@+id/seekbar_wrapper__five"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mark_begins"
+                android:layout_marginTop="16dp">
 
-        </android.support.constraint.ConstraintLayout>
+                <SeekBar
+                    android:id="@+id/seekbar__five"
+                    app:layout_widthPercent="75%"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:max="100"
+                    android:progress="75"
+                    android:layout_centerVertical="true" />
 
-    </android.support.percent.PercentRelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/seekbar__five"
+                    android:layout_marginEnd="2dp"
+                    android:layout_toStartOf="@id/seekbar__five"
+                    android:text="@string/seekbar_note__five"
+                    android:textSize="22sp"
+                    android:layout_centerVertical="true" />
+
+            </android.support.percent.PercentRelativeLayout>
+
+            <TextView
+                android:id="@+id/seekbar_indicator__five"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/seekbar_wrapper__five"
+                android:layout_centerHorizontal="true"
+                android:text="@string/default_seekbar_value__five"
+                android:textSize="16sp" />
+
+            <android.support.percent.PercentRelativeLayout
+                android:id="@+id/seekbar_wrapper__four"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/seekbar_indicator__five"
+                android:layout_marginTop="16dp">
+
+                <SeekBar
+                    android:id="@+id/seekbar__four"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:max="100"
+                    android:progress="50"
+                    app:layout_widthPercent="75%"
+                    android:layout_centerVertical="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/seekbar__four"
+                    android:layout_marginEnd="2dp"
+                    android:layout_toStartOf="@id/seekbar__four"
+                    android:text="@string/seekbar_note__four"
+                    android:textSize="22sp"
+                    android:layout_centerVertical="true" />
+
+            </android.support.percent.PercentRelativeLayout>
+
+            <TextView
+                android:id="@+id/seekbar_indicator__four"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/seekbar_wrapper__four"
+                android:layout_centerHorizontal="true"
+                android:text="@string/default_seekbar_value__four"
+                android:textSize="16sp" />
+
+            <android.support.percent.PercentRelativeLayout
+                android:id="@+id/seekbar_wrapper__three"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/seekbar_indicator__four"
+                android:layout_marginTop="16dp">
+
+                <SeekBar
+                    android:id="@+id/seekbar__three"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:max="100"
+                    android:progress="25"
+                    app:layout_widthPercent="75%"
+                    android:layout_centerVertical="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/seekbar__three"
+                    android:layout_marginEnd="2dp"
+                    android:layout_toStartOf="@id/seekbar__three"
+                    android:text="@string/seekbar_note__three"
+                    android:textSize="22sp"
+                    android:layout_centerVertical="true" />
+
+            </android.support.percent.PercentRelativeLayout>
+
+            <TextView
+                android:id="@+id/seekbar_indicator__three"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/seekbar_wrapper__three"
+                android:layout_centerHorizontal="true"
+                android:text="@string/default_seekbar_value__three"
+                android:textSize="16sp" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/show_wrong"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/seekbar_indicator__three"
+                android:text="@string/show_wrong"
+                app:layout_marginStartPercent="12.5%"
+                android:textSize="20sp"
+                android:textColor="@color/defaultGray"
+                app:buttonTint="@color/colorAccent"/>
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/timer_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/show_wrong"
+                android:text="@string/timer"
+                app:layout_marginStartPercent="12.5%"
+                android:textSize="20sp"
+                android:textColor="@color/defaultGray"
+                app:buttonTint="@color/colorAccent"/>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/timer_wrapper"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_alignStart="@id/show_wrong"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:layout_below="@id/timer_checkbox"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/timer_minute"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:hint="@string/zero_zero"
+                    android:maxLength="2"
+                    android:textSize="26sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:inputType="number"/>
+
+                <TextView
+                    android:id="@+id/colon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/colon"
+                    android:textSize="20sp"
+                    app:layout_constraintLeft_toRightOf="@+id/timer_minute"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <EditText
+                    android:id="@+id/timer_second"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:hint="@string/zero_zero"
+                    android:maxLength="2"
+                    android:textSize="26sp"
+                    app:layout_constraintLeft_toRightOf="@id/colon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:inputType="number"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/save_test"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/timer_wrapper"
+                android:textColor="@color/white"
+                android:text="@string/save"
+                android:textSize="16sp"
+                android:layout_marginTop="8dp"
+                app:layout_marginStartPercent="12.5%"
+                android:layout_marginBottom="8dp"
+                style="@style/save_button_style" />
+
+        </android.support.percent.PercentRelativeLayout>
+
+    </ScrollView>
 
 </FrameLayout>

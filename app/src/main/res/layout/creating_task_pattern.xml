@@ -19,7 +19,6 @@
             android:layout_marginTop="8dp"
             android:textSize="20sp"
             android:inputType="textCapSentences"
-            android:theme="@style/EditTextStyle"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

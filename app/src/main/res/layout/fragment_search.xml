@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.android.petro.testman.SearchFragment"
+    tools:context="com.android.petro.testman.Fragments.SearchFragment"
     android:paddingStart="8dp"
     android:paddingEnd="8dp">
 
@@ -19,8 +19,7 @@
                 android:id="@+id/search_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:theme="@style/EditTextStyle" />
+                android:inputType="text" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/task_recycle_view"
