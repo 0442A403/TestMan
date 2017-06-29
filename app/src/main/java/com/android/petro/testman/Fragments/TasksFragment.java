@@ -12,10 +12,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
 
 import com.android.petro.testman.R;
-import com.android.petro.testman.Support.TasksClass;
+import com.android.petro.testman.Support.TaskType;
+import com.android.petro.testman.Support.TasksData;
 
 import java.util.ArrayList;
 
@@ -53,13 +57,33 @@ public class TasksFragment extends Fragment {
     }
 
     private void addTask() {
+        saveData();
         taskAdapter.addTask();
         taskAdapter.notifyItemChanged(taskAdapter.getItemCount()-1);
     }
 
-    public TasksClass getData() {
+    private void logInformation(String notice) {
+        StringBuilder str = new StringBuilder(notice ).append("\n");
+        int i = 0;
+        for (TaskHolder holder : tasks) {
+            str.append("Question ").append(i).append(" ").append(holder.getQuestion()).append("\n");
+            for (TaskHolder.AnswerHolder answer : holder.answers)
+                str.append("Answer - ").append(answer.getData()).append("\n");
+            i++;
+        }
+        Log.i("Application Information", str.toString());
+    }
+
+    public TasksData getData() {
         saveData();
-        return new TasksClass(questions, answersArray);
+        ArrayList<TaskType> types = new ArrayList<>();
+        ArrayList<Object> rights = new ArrayList<>();
+        ArrayList<Object> photo = new ArrayList<>();
+        for (TaskHolder holder : tasks) {
+            types.add(holder.getType());
+            rights.add(holder.getRights());
+        }
+        return new TasksData(questions, answersArray, types, rights, photo);
     }
 
     private void saveData() {
@@ -69,14 +93,9 @@ public class TasksFragment extends Fragment {
         int i = 0;
         for (TaskHolder holder : tasks) {
             questions.add(holder.getQuestion());
-            holder.answerAdapter.notifyDataSetChanged();
             answersArray.add(holder.getAnswers());
 
-            Log.i("Application Information", holder.answers.size() + " " + holder.answerAdapter.answerSize);
-            str.append("Question ").append(i).append(" ").append(questions.get(i)).append("\n");
-            for (String string : answersArray.get(i))
-                str.append("Answer - ").append(string).append("\n");
-            i++;
+//            Log.i("Application Information", holder.answers.size() + " " + holder.answerAdapter.answerSize);
         }
         Log.i("Application Information", str.toString());
     }
@@ -171,6 +190,7 @@ public class TasksFragment extends Fragment {
         private ArrayList<String> answerStrings = new ArrayList<>();
         private ArrayList<AnswerHolder> answers = new ArrayList<>();
         private int position;
+        private TaskType type = TaskType.RADIO_BOX;
 
         TaskHolder(View itemView) {
             super(itemView);
@@ -199,6 +219,7 @@ public class TasksFragment extends Fragment {
         }
 
         void setData(int position) {
+            clearData();
             question.setText(questions.get(position));
             answerStrings = answersArray.get(position);
             answerAdapter.setSize(answerStrings.size());
@@ -212,6 +233,7 @@ public class TasksFragment extends Fragment {
 
         private void saveData() {
             answerStrings.clear();
+            Log.d("debugging", String.valueOf(answers.size()));
             for (AnswerHolder answer : answers) {
                 answerStrings.add(answer.getData());
                 Log.d("debugging", "a - " + answer.getData());
@@ -227,7 +249,8 @@ public class TasksFragment extends Fragment {
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             MenuItem delete = menu.add(Menu.NONE, 0, 0, "Удалить");
-            MenuItem addImage = menu.add(Menu.NONE, 1, 1, "Добавить изображение");
+            final MenuItem changeInput = menu.add(Menu.NONE, 1, 1, "Изменить ввод");
+            MenuItem addImage = menu.add(Menu.NONE, 2, 2, "Добавить изображение");
 
             delete.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
@@ -236,13 +259,53 @@ public class TasksFragment extends Fragment {
                     return false;
                 }
             });
+
+            changeInput.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    if (type == TaskType.RADIO_BOX)
+                        changeInput(TaskType.CHECK_BOX);
+                    else if (type == TaskType.CHECK_BOX)
+                        changeInput(TaskType.RADIO_BOX);
+                    return false;
+                }
+            });
+        }
+
+        void changeInput(TaskType type) {
+            this.type = type;
+            for (AnswerHolder holder : answers)
+                holder.changeInput(type);
         }
 
         void clearData() {
             answerStrings.clear();
+            answers.clear();
             question.setText("");
             answerAdapter.setDefaultSize();
             answerAdapter.notifyDataSetChanged();
+            changeInput(TaskType.RADIO_BOX);
+        }
+
+        TaskType getType() {
+            return type;
+        }
+
+        Object getRights() {
+            if (type == TaskType.RADIO_BOX) {
+                for (int i = 0; i < answers.size(); i++)
+                    if (answers.get(i).isChecked())
+                        return i;
+            }
+            else if (type == TaskType.CHECK_BOX) {
+                ArrayList<Integer> list = new ArrayList<>();
+                for (int i = 0; i < answers.size(); i++)
+                    if (answers.get(i).isChecked())
+                        list.add(i);
+                if (list.size() > 0)
+                    return list;
+            }
+            return null;
         }
 
         class AnswerAdapter extends RecyclerView.Adapter<AnswerHolder> {
@@ -262,6 +325,7 @@ public class TasksFragment extends Fragment {
             @Override
             public void onBindViewHolder(AnswerHolder holder, int position) {
                 if (position >= answerStrings.size()) {
+                    Log.w("ONBINDVIEWHOLDER", position + " LOLOLOLOLOLO");
                     answers.add(holder);
                     holder.setData("");
                 }
@@ -298,6 +362,8 @@ public class TasksFragment extends Fragment {
 
             private EditText answer;
             private int position;
+            private RadioButton radioButton;
+            private CheckBox checkBox;
 
             AnswerHolder(View viewItem) {
                 super(viewItem);
@@ -308,7 +374,18 @@ public class TasksFragment extends Fragment {
                         answerAdapter.removeAnswer(position);
                     }
                 });
+                radioButton = (RadioButton) itemView.findViewById(R.id.radio_button__answer_pattern);
+                checkBox = (CheckBox) itemView.findViewById(R.id.checkbox__answer_pattern);
 
+                radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked)
+                            for (AnswerHolder answer : answers)
+                                if (AnswerHolder.this != answer)
+                                    answer.makeUnchecked();
+                    }
+                });
             }
 
             void setPosition(int position) {
@@ -321,6 +398,29 @@ public class TasksFragment extends Fragment {
 
             void setData(String str) {
                 answer.setText(str);
+            }
+
+            void changeInput(TaskType type) {
+                if (type == TaskType.RADIO_BOX) {
+                    radioButton.setVisibility(View.VISIBLE);
+                    checkBox.setVisibility(View.INVISIBLE);
+                }
+                else if (type == TaskType.CHECK_BOX) {
+                    radioButton.setVisibility(View.INVISIBLE);
+                    checkBox.setVisibility(View.VISIBLE);
+                }
+            }
+
+            Boolean isChecked() {
+                if (type == TaskType.RADIO_BOX)
+                    return radioButton.isChecked();
+                else if (type == TaskType.CHECK_BOX)
+                    return checkBox.isChecked();
+                return null;
+            }
+
+            void makeUnchecked() {
+                radioButton.setChecked(false);
             }
         }
     }

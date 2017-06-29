@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
+        <android.support.v7.widget.AppCompatEditText
             android:id="@+id/question"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -21,7 +21,17 @@
             android:inputType="textCapSentences"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:backgroundTint="@color/colorAccent"
+            app:backgroundTint="@color/colorAccent" />
+
+        <ImageView
+            android:id="@+id/task_image__creating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/question" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/answer_recycle_view"
@@ -32,7 +42,7 @@
             android:layout_marginTop="0dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/question" />
+            app:layout_constraintTop_toBottomOf="@+id/task_image__creating" />
 
         <ImageView
             android:id="@+id/add_answer_button"

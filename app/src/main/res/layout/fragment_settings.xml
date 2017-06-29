@@ -151,6 +151,7 @@
                 android:layout_below="@id/seekbar_indicator__three"
                 android:text="@string/show_wrong"
                 app:layout_marginStartPercent="12.5%"
+                android:layout_marginTop="8dp"
                 android:textSize="20sp"
                 android:textColor="@color/defaultGray"
                 app:buttonTint="@color/colorAccent"/>
@@ -176,7 +177,7 @@
                 android:layout_below="@id/timer_checkbox"
                 android:visibility="gone">
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/timer_minute"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
@@ -185,8 +186,8 @@
                     android:textSize="26sp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:inputType="number"/>
+                    android:inputType="number"
+                    app:backgroundTint="@color/colorAccent" />
 
                 <TextView
                     android:id="@+id/colon"
@@ -196,11 +197,9 @@
                     android:textSize="20sp"
                     app:layout_constraintLeft_toRightOf="@+id/timer_minute"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginBottom="8dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginTop="8dp" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/timer_second"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
@@ -209,8 +208,8 @@
                     android:textSize="26sp"
                     app:layout_constraintLeft_toRightOf="@id/colon"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:inputType="number"/>
+                    android:inputType="number"
+                    app:backgroundTint="@color/colorAccent" />
 
             </android.support.constraint.ConstraintLayout>
 

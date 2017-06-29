@@ -40,6 +40,7 @@ dependencies {
     compile 'com.android.support:percent:25.3.1'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'com.pawegio.kandroid:kandroid:0.8.3@aar'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
 }
 repositories {
     mavenCentral()

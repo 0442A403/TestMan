@@ -1,6 +1,7 @@
 package com.android.petro.testman.Fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -11,7 +12,8 @@ import android.view.ViewGroup;
 
 import com.android.petro.testman.R;
 import com.android.petro.testman.Support.CreateCallBack;
-import com.android.petro.testman.Support.SettingsClass;
+import com.android.petro.testman.Support.SettingsData;
+import com.android.petro.testman.Support.TasksData;
 import com.android.petro.testman.Support.TestClass;
 
 import java.util.ArrayList;
@@ -52,8 +54,9 @@ public class CreateFragment extends Fragment implements CreateCallBack {
     }
 
     @Override
-    public void onTestSave(SettingsClass settings) {
-        TestClass test = new TestClass(settings, tasksFragment.getData());
+    public void onTestSave(@NonNull SettingsData settings) {
+        TasksData tasksData = tasksFragment.getData();
+        TestClass test = new TestClass(settings, tasksData);
         test.save();
     }
 

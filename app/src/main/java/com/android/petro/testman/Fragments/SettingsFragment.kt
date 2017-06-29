@@ -1,5 +1,6 @@
 package com.android.petro.testman.Fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -7,10 +8,11 @@ import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import com.android.petro.testman.R
 import com.android.petro.testman.Support.CreateCallBack
-import com.android.petro.testman.Support.SettingsClass
+import com.android.petro.testman.Support.SettingsData
 import com.pawegio.kandroid.onProgressChanged
 import com.pawegio.kandroid.textWatcher
 import kotlinx.android.synthetic.main.fragment_settings.view.*
@@ -23,6 +25,8 @@ import kotlin.properties.Delegates
 class SettingsFragment(val callback: CreateCallBack) : Fragment() {
 
     private var layout: FrameLayout by Delegates.notNull()
+    private val EMPTY_NAME = 1
+    private val EMPTY_TIMER = 2
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -68,7 +72,6 @@ class SettingsFragment(val callback: CreateCallBack) : Fragment() {
             threeIndicator.text = "${three.progress}%"
         }
 
-        val showWrong = layout.show_wrong
         val timerCheckBox = layout.timer_checkbox
         val timerWrapper: View = layout.timer_wrapper
 
@@ -76,14 +79,17 @@ class SettingsFragment(val callback: CreateCallBack) : Fragment() {
             _, isChecked : Boolean ->
             if (isChecked)
                 timerWrapper.visibility = View.VISIBLE
-            else
+            else {
                 timerWrapper.visibility = View.GONE
+                (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
+                        .hideSoftInputFromWindow(layout.windowToken, 0)
+            }
         }
 
         val minute = layout.timer_minute
         val second = layout.timer_second
 
-        minute.setOnEditorActionListener { _, _, _ -> minute.requestFocus() }
+        minute.setOnEditorActionListener { _, _, _ -> second.requestFocus() }
         second.textWatcher {
             onTextChanged { _, _, _, _ ->
                 if (minute.length() == 2 && minute.text.toString().toInt() > 59)
@@ -92,10 +98,12 @@ class SettingsFragment(val callback: CreateCallBack) : Fragment() {
         }
 
         layout.save_test.setOnClickListener { v ->
-            if (checkEmpty())
-                Snackbar.make(v, "Введите время", Snackbar.LENGTH_SHORT).show()
-            else {
-                dialogBox(getTime() < 300)
+            when (checkEmpty()) {
+                EMPTY_NAME -> Snackbar.make(v, "Введите имя", Snackbar.LENGTH_SHORT).show()
+                EMPTY_TIMER -> Snackbar.make(v, "Введите время", Snackbar.LENGTH_SHORT).show()
+                else -> {
+                    dialogBox(getTime() < 300 && layout.timer_checkbox.isChecked)
+                }
             }
         }
 
@@ -104,7 +112,7 @@ class SettingsFragment(val callback: CreateCallBack) : Fragment() {
 
     fun dialogBox(b: Boolean) {
         val alertDialogBuilder = AlertDialog.Builder(activity)
-        alertDialogBuilder.setMessage(if (b) "Вы выбрали время, меньшее 5 минут, сохранить?" else "Сохранить")
+        alertDialogBuilder.setMessage(if (b) "Вы выбрали время, меньшее 5 минут, сохранить?" else "Сохранить?")
         alertDialogBuilder.setPositiveButton("ОК") {
             arg0, arg1 -> callback.onTestSave(saveData())
         }
@@ -116,17 +124,25 @@ class SettingsFragment(val callback: CreateCallBack) : Fragment() {
         alertDialog.show()
     }
 
-    fun checkEmpty(): Boolean {
-        if (layout.test_name__creating.length() == 0
-                || (layout.timer_checkbox.isChecked && getTime() == 0))
-            return true
-        return false
+    fun checkEmpty(): Int {
+        if (layout.test_name__creating.length() == 0)
+            return EMPTY_NAME
+        if (layout.timer_checkbox.isChecked && getTime() == 0)
+            return EMPTY_TIMER
+        return 0
     }
 
-    fun getTime() = layout.timer_minute.text.toString().toInt() * 60 + layout.timer_second.text.toString().toInt()
+    fun getTime(): Int {
+        var time = 0
+        if (layout.timer_minute.length() > 0)
+            time += layout.timer_minute.text.toString().toInt() * 60
+        if (layout.timer_second.length() > 0)
+            time += layout.timer_second.text.toString().toInt()
+        return time
+    }
 
     fun saveData() =
-        SettingsClass(
+        SettingsData(
                 layout.test_name__creating.text.toString(),
                 layout.seekbar__five.progress,
                 layout.seekbar__four.progress,

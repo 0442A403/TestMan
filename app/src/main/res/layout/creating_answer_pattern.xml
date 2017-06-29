@@ -13,21 +13,31 @@
         app:layout_constraintTop_toTopOf="parent"
         app:buttonTint="@color/colorAccent" />
 
-    <EditText
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/checkbox__answer_pattern"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:buttonTint="@color/colorAccent"
+        android:visibility="invisible" />
+
+    <android.support.v7.widget.AppCompatEditText
         android:id="@+id/patterns_answer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintRight_toLeftOf="@+id/remove_answer"
-        app:layout_constraintLeft_toRightOf="@id/radio_button__answer_pattern"
+        app:layout_constraintLeft_toRightOf="@id/checkbox__answer_pattern"
         app:layout_constraintTop_toTopOf="parent"
-        android:inputType="text"/>
+        android:inputType="text"
+        app:backgroundTint="@color/colorAccent" />
 
     <ImageView
         android:id="@+id/remove_answer"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:src="@drawable/ic_delete_black_24dp"
+        app:srcCompat="@drawable/ic_delete_black_24px"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

@@ -4,7 +4,7 @@ package com.android.petro.testman.Support
  * Support class for transferring general information throw callback
  */
 
-class SettingsClass(
+class SettingsData(
         val name: String,
         val fiveB: Int,
         val fourB: Int,
