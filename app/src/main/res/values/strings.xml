@@ -24,4 +24,5 @@
     <string name="colon">:</string>
     <string name="save">Сохранить</string>
     <string name="fill_name">Введите название</string>
+    <string name="testman">TestMan</string>
 </resources>

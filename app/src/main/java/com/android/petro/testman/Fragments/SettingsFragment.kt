@@ -99,10 +99,11 @@ class SettingsFragment(val callback: CreateCallBack) : Fragment() {
 
         layout.save_test.setOnClickListener { v ->
             when (checkEmpty()) {
-                EMPTY_NAME -> Snackbar.make(v, "Введите имя", Snackbar.LENGTH_SHORT).show()
+                EMPTY_NAME -> Snackbar.make(v, "Введите название", Snackbar.LENGTH_SHORT).show()
                 EMPTY_TIMER -> Snackbar.make(v, "Введите время", Snackbar.LENGTH_SHORT).show()
                 else -> {
-                    dialogBox(getTime() < 300 && layout.timer_checkbox.isChecked)
+                    if (!callback.checkEmpty())
+                        dialogBox(getTime() < 300 && layout.timer_checkbox.isChecked)
                 }
             }
         }
@@ -148,7 +149,7 @@ class SettingsFragment(val callback: CreateCallBack) : Fragment() {
                 layout.seekbar__four.progress,
                 layout.seekbar__three.progress,
                 layout.show_wrong.isChecked,
-                getTime()
+                if (layout.timer_checkbox.isChecked) getTime() else 0
         )
 
 }

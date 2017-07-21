@@ -22,6 +22,8 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -87,6 +89,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     SharedPreferences.Editor edit = preferences.edit();
                     edit.putString("Token", authCode);
+                    edit.putLong("Last Opening", System.currentTimeMillis());
                     edit.apply();
                     if (dialog.isShowing())
                         dialog.dismiss();
@@ -160,6 +163,20 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(String str) {
             authComplete = false;
             Log.d("JSONObject", str);
+
+            SharedPreferences.Editor editor = preferences.edit();
+            try {
+                JSONObject response = new JSONObject(str).getJSONObject("response");
+                editor.putString(
+                        "author",
+                        response.getString("last_name")
+                        + " "
+                        + response.getString("first_name"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            editor.apply();
+
             Toast.makeText(LoginActivity.this, str, Toast.LENGTH_SHORT).show();
             pDialog.dismiss();
             Intent intent = new Intent(LoginActivity.this, BaseActivity.class);

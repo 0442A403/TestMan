@@ -8,4 +8,5 @@
     <color name="gray">#999</color>
     <color name="defaultGray">#777</color>
     <color name="darkGray">#383838</color>
+    <color name="trueColorPrimaryDark">#d56900</color>
 </resources>

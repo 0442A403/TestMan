@@ -1,6 +1,7 @@
 package com.android.petro.testman.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -28,6 +29,7 @@ public class BaseActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
     Toolbar toolbar;
+    NavigationView upperNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +43,7 @@ public class BaseActivity extends AppCompatActivity {
                 R.string.app_name, R.string.app_name);
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
-        changeFragment(new SearchFragment());
-
-        NavigationView upperNavigationView = (NavigationView) findViewById(R.id.upper_nav_view);
+        upperNavigationView = (NavigationView) findViewById(R.id.upper_nav_view);
         NavigationView lowerNavigationView = (NavigationView) findViewById(R.id.exit_nav_view);
 
         upperNavigationView.setCheckedItem(R.id.search_test_item);
@@ -55,17 +55,14 @@ public class BaseActivity extends AppCompatActivity {
                             case R.id.search_test_item:
                                 changeFragment(new SearchFragment());
                                 drawerLayout.closeDrawer(Gravity.START);
-                                setTitle("Найти тест");
                                 break;
                             case R.id.create_test_item:
-                                changeFragment(new CreateFragment(getSupportFragmentManager()));
+                                changeFragment(new CreateFragment(getSupportFragmentManager(), BaseActivity.this));
                                 drawerLayout.closeDrawer(Gravity.START);
-                                setTitle("Создать тест");
                                 break;
                             case R.id.my_tests_item:
                                 changeFragment(new MyTestsFragment());
                                 drawerLayout.closeDrawer(Gravity.START);
-                                setTitle("Мои тесты");
                                 break;
                         }
                         return true;
@@ -75,6 +72,10 @@ public class BaseActivity extends AppCompatActivity {
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        SharedPreferences.Editor editor = getSharedPreferences("AppPref", MODE_PRIVATE).edit();
+                        editor.putString("Token", null);
+                        editor.putLong("Last Opening", 0L);
+                        editor.apply();
                         Intent intent = new Intent(BaseActivity.this, LoginActivity.class);
                         CookieManager.getInstance().removeAllCookie();
                         startActivity(intent);
@@ -83,11 +84,25 @@ public class BaseActivity extends AppCompatActivity {
                     }
                 });
 
+        changeFragment(new SearchFragment());
+
     }
 
-    private void changeFragment(Fragment fragment) {
+    public void changeFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, fragment).commit();
+        if (fragment.getClass() == SearchFragment.class) {
+            setTitle("Найти тест");
+            upperNavigationView.setCheckedItem(R.id.search_test_item);
+        }
+        else if (fragment.getClass() == CreateFragment.class) {
+            setTitle("Создать тест");
+            upperNavigationView.setCheckedItem(R.id.create_test_item);
+        }
+        else {
+            setTitle("Мои тесты");
+            upperNavigationView.setCheckedItem(R.id.my_tests_item);
+        }
     }
 
     @Override

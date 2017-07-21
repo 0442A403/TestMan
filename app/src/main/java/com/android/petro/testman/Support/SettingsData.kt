@@ -6,8 +6,8 @@ package com.android.petro.testman.Support
 
 class SettingsData(
         val name: String,
-        val fiveB: Int,
-        val fourB: Int,
-        val threeB: Int,
+        val fiveBegins: Int,
+        val fourBegins: Int,
+        val threeBegins: Int,
         val showWrongs: Boolean,
         val time: Int)

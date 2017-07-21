@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 
 import com.android.petro.testman.R;
+import com.android.petro.testman.Support.TaskClass;
 import com.android.petro.testman.Support.TaskType;
 import com.android.petro.testman.Support.TasksData;
 
@@ -76,28 +77,29 @@ public class TasksFragment extends Fragment {
 
     public TasksData getData() {
         saveData();
-        ArrayList<TaskType> types = new ArrayList<>();
-        ArrayList<Object> rights = new ArrayList<>();
-        ArrayList<Object> photo = new ArrayList<>();
+        ArrayList<TaskClass> tasksInformation = new ArrayList<>();
         for (TaskHolder holder : tasks) {
-            types.add(holder.getType());
-            rights.add(holder.getRights());
+            if (holder.getQuestion().length() == 0 ||
+                    holder.getAnswersData() == null ||
+                    holder.getRights() == null)
+                return null;
+
+            tasksInformation.add(new TaskClass(holder.getQuestion(),
+                    holder.getAnswersData(),
+                    holder.getType().getCode(),
+                    holder.getRights(),
+                    new Object()));
         }
-        return new TasksData(questions, answersArray, types, rights, photo);
+        return new TasksData(tasksInformation);
     }
 
     private void saveData() {
         questions.clear();
         answersArray.clear();
-        StringBuilder str = new StringBuilder();
-        int i = 0;
         for (TaskHolder holder : tasks) {
             questions.add(holder.getQuestion());
             answersArray.add(holder.getAnswers());
-
-//            Log.i("Application Information", holder.answers.size() + " " + holder.answerAdapter.answerSize);
         }
-        Log.i("Application Information", str.toString());
     }
 
     private class TaskAdapter extends RecyclerView.Adapter<TaskHolder> {
@@ -228,6 +230,14 @@ public class TasksFragment extends Fragment {
 
         ArrayList<String> getAnswers() {
             saveData();
+            return answerStrings;
+        }
+
+        ArrayList<String> getAnswersData() {
+            saveData();
+            for (String str : answerStrings)
+                if (str.length() == 0)
+                    return null;
             return answerStrings;
         }
 
