@@ -30,7 +30,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="8dp"
-                android:overScrollMode="never" />
+                android:overScrollMode="never"
+                android:scrollbars="none" />
 
         </LinearLayout>
 

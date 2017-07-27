@@ -7,7 +7,7 @@ import android.support.annotation.MainThread
  * from SettingsFragment to CreateFragment through
  * SettingsData
  */
-interface CreateCallBack {
+interface onTestSave {
     fun onTestSave(settings : SettingsData)
     fun checkEmpty(): Boolean
     fun onSaved()

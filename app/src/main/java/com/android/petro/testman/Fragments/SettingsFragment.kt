@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import com.android.petro.testman.R
-import com.android.petro.testman.Support.CreateCallBack
+import com.android.petro.testman.Support.onTestSave
 import com.android.petro.testman.Support.SettingsData
 import com.pawegio.kandroid.onProgressChanged
 import com.pawegio.kandroid.textWatcher
@@ -22,7 +22,7 @@ import kotlin.properties.Delegates
  * Fragment for test's settings
  */
 
-class SettingsFragment(val callback: CreateCallBack) : Fragment() {
+class SettingsFragment(val callback: onTestSave) : Fragment() {
 
     private var layout: FrameLayout by Delegates.notNull()
     private val EMPTY_NAME = 1
@@ -58,7 +58,6 @@ class SettingsFragment(val callback: CreateCallBack) : Fragment() {
                 three.progress = progress - 1
             else if (progress >= five.progress)
                 five.progress = progress + 1
-            val i : Int = four.progress
             fourIndicator.text = "${four.progress}%"
         }
         three.onProgressChanged {
@@ -92,8 +91,10 @@ class SettingsFragment(val callback: CreateCallBack) : Fragment() {
         minute.setOnEditorActionListener { _, _, _ -> second.requestFocus() }
         second.textWatcher {
             onTextChanged { _, _, _, _ ->
-                if (minute.length() == 2 && minute.text.toString().toInt() > 59)
-                    minute.setText(minute.text.substring(0..0))
+                if (second.text.length == 2 && second.text.toString().toInt() > 59) {
+                    second.setText(second.text.substring(0..0))
+                    second.setSelection(1)
+                }
             }
         }
 
@@ -115,10 +116,10 @@ class SettingsFragment(val callback: CreateCallBack) : Fragment() {
         val alertDialogBuilder = AlertDialog.Builder(activity)
         alertDialogBuilder.setMessage(if (b) "Вы выбрали время, меньшее 5 минут, сохранить?" else "Сохранить?")
         alertDialogBuilder.setPositiveButton("ОК") {
-            arg0, arg1 -> callback.onTestSave(saveData())
+            _, _ -> callback.onTestSave(saveData())
         }
         alertDialogBuilder.setNegativeButton("Отмена") {
-            arg0, arg1 ->
+            _, _ ->
         }
 
         val alertDialog = alertDialogBuilder.create()

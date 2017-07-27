@@ -18,35 +18,37 @@ class LaunchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launch)
         val preferences = getSharedPreferences("AppPref", Context.MODE_PRIVATE)
-        if (preferences!!.getLong("Last Opening", 0) + 1 < System.currentTimeMillis()
-                && preferences.getString("Token", "").isNotEmpty()) {
-            val networkThread = NetworkThread()
-
-            val dialog = ProgressDialog(this)
-            dialog.setCancelable(false)
-            dialog.setMessage("Подождите")
-            dialog.show()
-
-            networkThread.start()
-            networkThread.join()
-
-            dialog.dismiss()
-
-            Toast.makeText(this, Uri.parse(networkThread.redirectedURL.toString())
-                    .getQueryParameter("access_token"), Toast.LENGTH_SHORT).show()
-
-            val editor = getSharedPreferences("AppPref", Context.MODE_PRIVATE).edit()
-            editor.putString("Token",
-                    Uri.parse(networkThread.redirectedURL.toString())
-                            .getQueryParameter("access_token"))
-            editor.apply()
-            startActivity(Intent(this, BaseActivity::class.java))
-            finish()
-        }
-        else {
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
-        }
+//        if (preferences!!.getLong("Last Opening", 0) + 1000000 >= System.currentTimeMillis()
+//                && preferences.getString("Token", "").isNotEmpty()) {
+//            val networkThread = NetworkThread()
+//
+//            val dialog = ProgressDialog(this)
+//            dialog.setCancelable(false)
+//            dialog.setMessage("Подождите")
+//            dialog.show()
+//
+//            networkThread.start()
+//            networkThread.join()
+//
+//            dialog.dismiss()
+//
+//            Toast.makeText(this, Uri.parse(networkThread.redirectedURL.toString())
+//                    .getQueryParameter("access_token"), Toast.LENGTH_SHORT).show()
+//
+//            val editor = getSharedPreferences("AppPref", Context.MODE_PRIVATE).edit()
+//            editor.putString("Token",
+//                    Uri.parse(networkThread.redirectedURL.toString())
+//                            .getQueryParameter("access_token"))
+//            editor.apply()
+//            startActivity(Intent(this, BaseActivity::class.java))
+//            finish()
+//        }
+//        else {
+//            startActivity(Intent(this, LoginActivity::class.java))
+//            finish()
+//        }
+        startActivity(Intent(this, BaseActivity::class.java))
+        finish()
     }
 
     private  class NetworkThread: Thread() {

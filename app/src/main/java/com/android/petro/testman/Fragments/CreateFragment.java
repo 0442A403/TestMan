@@ -1,7 +1,6 @@
 package com.android.petro.testman.Fragments;
 
 import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -12,39 +11,22 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.android.petro.testman.Activities.BaseActivity;
 import com.android.petro.testman.R;
-import com.android.petro.testman.Support.CreateCallBack;
+import com.android.petro.testman.Support.onTestSave;
 import com.android.petro.testman.Support.SettingsData;
 import com.android.petro.testman.Support.TasksData;
 import com.android.petro.testman.Support.TestClass;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 
 /**
  * Fragment for creating new tests
  */
 
-public class CreateFragment extends Fragment implements CreateCallBack {
+public class CreateFragment extends Fragment implements onTestSave {
     FragmentManager fragmentManager = null;
     ViewPager pager = null;
     TasksFragment tasksFragment;

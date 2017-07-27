@@ -1,21 +1,26 @@
 package com.android.petro.testman.Fragments
 
+import android.app.LauncherActivity
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.Bitmap
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import com.android.petro.testman.Activities.SolveActivity
 
 import com.android.petro.testman.R
 import com.android.petro.testman.Support.DataBase
@@ -23,6 +28,7 @@ import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
+import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.fragment_search.view.*
 import kotlinx.android.synthetic.main.test_item.view.*
 import okhttp3.OkHttpClient
@@ -92,9 +98,9 @@ class SearchFragment : Fragment() {
 //        }
 //        cursor.close()
 
-        view.task_recycle_view.adapter = adapter
-        view.task_recycle_view.layoutManager = LinearLayoutManager(activity)
-
+        val recycleView = view.task_recycle_view
+        recycleView.adapter = adapter
+        recycleView.layoutManager = LinearLayoutManager(activity)
         updateData()
 
         return view
@@ -112,14 +118,15 @@ class SearchFragment : Fragment() {
             val test = Test(jsonTest.getInt("id"),
                     jsonTest.getString("name"),
                     jsonTest.getString("author"),
-                    null)
+                    null,
+                    jsonTest.getInt("time"))
             testData.add(0, test)
             relevantTestsData.add(0, test)
             adapter!!.notifyDataSetChanged()
         }
     }
 
-    private class TestHolder(view: View) : RecyclerView.ViewHolder(view) {
+    private class TestHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val testName = view.test_item_name
         val testAuthor = view.test_item_description
         val testIcon = view.test_item_icon
@@ -130,6 +137,15 @@ class SearchFragment : Fragment() {
         override fun onBindViewHolder(holder: TestHolder?, position: Int) {
             holder!!.testName.text = relevantTestsData.get(position).name
             holder.testAuthor.text = relevantTestsData.get(position).author
+            holder.view.setOnClickListener {
+                v->
+                startActivity(
+                        Intent(activity, SolveActivity::class.java)
+                                .putExtra("id", relevantTestsData.get(position).id)
+                                .putExtra("time", relevantTestsData.get(position).time)
+                                .putExtra("name", relevantTestsData.get(position).name))
+                Log.v("TestId", relevantTestsData.get(position).id.toString())
+            }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TestHolder {
@@ -141,13 +157,13 @@ class SearchFragment : Fragment() {
         override fun getItemCount(): Int {
             return relevantTestsData.size
         }
-
     }
 
     class Test(val id: Int,
                val name: String,
                val author: String,
-               val icon: Bitmap?)
+               val icon: Bitmap?,
+               val time: Int)
 
     private inner class GetData(context: Context) : AsyncTask<Void, Void, Void>() {
         private var answer: JSONArray? = null
@@ -161,13 +177,15 @@ class SearchFragment : Fragment() {
 
         override fun doInBackground(vararg params: Void): Void? {
             try {
-                answer = JSONArray(
-                        OkHttpClient()
-                                .newCall(Request.Builder()
-                                        .url("https://testman-o442a4o3.c9users.io/get_all_tests")
-                                        .get()
-                                        .build())
-                                .execute().body().string())
+                val str = OkHttpClient()
+                        .newCall(Request.Builder()
+                                .url(resources.getString(R.string.server_url)
+                                        + resources.getString(R.string.get_all_tests))
+                                .get()
+                                .build())
+                        .execute().body().string()
+                Log.v("ServerResponse", str)
+                answer = JSONArray(str)
                 Log.v("ServerResponse", answer.toString())
             } catch (e: IOException) {
                 e.printStackTrace()

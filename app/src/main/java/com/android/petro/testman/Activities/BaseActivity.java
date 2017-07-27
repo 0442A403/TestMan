@@ -61,8 +61,7 @@ public class BaseActivity extends AppCompatActivity {
                                 drawerLayout.closeDrawer(Gravity.START);
                                 break;
                             case R.id.my_tests_item:
-                                changeFragment(new MyTestsFragment());
-                                drawerLayout.closeDrawer(Gravity.START);
+                                startActivity(new Intent(BaseActivity.this, SolveActivity.class));
                                 break;
                         }
                         return true;

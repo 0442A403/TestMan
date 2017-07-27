@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:foreground="?attr/selectableItemBackground"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    android:layout_margin="8dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"

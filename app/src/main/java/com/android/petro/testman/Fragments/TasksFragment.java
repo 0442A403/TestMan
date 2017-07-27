@@ -34,6 +34,7 @@ public class TasksFragment extends Fragment {
     private ArrayList<String> questions = new ArrayList<>();
     private ArrayList<ArrayList<String>> answersArray = new ArrayList<>();
     private ArrayList<TaskHolder> tasks = new ArrayList<>();
+    private FloatingActionButton floatButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,14 +47,22 @@ public class TasksFragment extends Fragment {
         taskRecycle.setLayoutManager(new LinearLayoutManager(getActivity()));
         addTask();
 
-        FloatingActionButton floatButton = (FloatingActionButton) view.findViewById(R.id.add_task_button);
+        floatButton = (FloatingActionButton) view.findViewById(R.id.add_task_button);
         floatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addTask();
             }
         });
-
+        taskRecycle.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0)
+                    floatButton.hide();
+                else if (dy != 0)
+                    floatButton.show();
+            }
+        });
         return view;
     }
 
@@ -136,44 +145,6 @@ public class TasksFragment extends Fragment {
         }
 
         void removeTask(int position) {
-//            tasks.remove(position);
-//
-//            StringBuilder strb = new StringBuilder("Before saveData()\n");
-//            int i = 0;
-//            for (TaskHolder holder : tasks) {
-//                questions.add(holder.getQuestion());
-//                answersArray.add(holder.getAnswers());
-//                strb.append("Question ").append(i).append(" ").append(questions.get(i)).append("\n");
-//                for (String string : answersArray.get(i))
-//                    strb.append("Answer - ").append(string).append("\n");
-//            }
-//            Log.i("Application Information", strb.toString());
-//
-//
-//            saveData();
-//
-//
-//            StringBuilder stringBuffer = new StringBuilder();
-//            i = 0;
-//            for (TaskHolder holder : tasks) {
-//                stringBuffer.append("TaskHolder number ").append(i).append(":\n");
-//                stringBuffer.append("answers.size() - ").append(holder.answers.size()).append("\n");
-//                stringBuffer.append("answerSize - ").append(holder.answerAdapter.answerSize).append("\n");
-//                stringBuffer.append("answerStrings.size() - ").append(holder.answerStrings.size()).append("\n");
-//                stringBuffer.append("position - ").append(holder.position).append("\n");
-//                stringBuffer.append("Question - ").append(holder.getQuestion()).append("\n");
-//                int j = 0;
-//                for (String str : holder.getAnswers()) {
-//                    stringBuffer.append("Answer ").append(j).append(" - ").append(str).append("\n");
-//                    j++;
-//                }
-//                i++;
-//            }
-//            Log.i("Application Information", stringBuffer.toString());
-//
-//
-//            taskSize--;
-//            taskAdapter.notifyDataSetChanged();
             tasks.remove(position);
             taskSize--;
             if (taskSize == 0)
@@ -181,6 +152,7 @@ public class TasksFragment extends Fragment {
             notifyItemRemoved(position);
             for (int i = 0; i < tasks.size(); i++)
                 tasks.get(i).setPosition(i);
+            floatButton.show();
         }
     }
 
@@ -365,6 +337,7 @@ public class TasksFragment extends Fragment {
                 if (answerSize == 1)
                     addAnswer();
                 notifyDataSetChanged();
+                floatButton.show();
             }
         }
 
