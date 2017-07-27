@@ -1,5 +1,6 @@
 package com.android.petro.testman.Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -30,6 +32,7 @@ public class BaseActivity extends AppCompatActivity {
     ActionBarDrawerToggle actionBarDrawerToggle;
     Toolbar toolbar;
     NavigationView upperNavigationView;
+    ActualFragment actualFragment = ActualFragment.SEARCH_FRAGMENT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +53,28 @@ public class BaseActivity extends AppCompatActivity {
         upperNavigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
+                        if (actualFragment == ActualFragment.CREATE_FRAGMENT) {
+                            if (item.getItemId() == R.id.create_test_item) {
+                                drawerLayout.closeDrawer(Gravity.START);
+                                return true;
+                            }
+                            new AlertDialog.Builder(BaseActivity.this)
+                                    .setTitle("Данные будут потеряны. Выйти?")
+                                    .setPositiveButton("Выйти", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            changeFragment(
+                                                    item.getItemId() == R.id.search_test_item?
+                                                            new SearchFragment()
+                                                            : new MyTestsFragment());
+                                            drawerLayout.closeDrawer(Gravity.START);
+                                        }
+                                    })
+                                    .setNegativeButton("Отмена", null)
+                                    .show();
+                            return false;
+                        }
                         switch (item.getItemId()) {
                             case R.id.search_test_item:
                                 changeFragment(new SearchFragment());
@@ -93,14 +117,17 @@ public class BaseActivity extends AppCompatActivity {
         if (fragment.getClass() == SearchFragment.class) {
             setTitle("Найти тест");
             upperNavigationView.setCheckedItem(R.id.search_test_item);
+            actualFragment = ActualFragment.SEARCH_FRAGMENT;
         }
         else if (fragment.getClass() == CreateFragment.class) {
             setTitle("Создать тест");
             upperNavigationView.setCheckedItem(R.id.create_test_item);
+            actualFragment = ActualFragment.CREATE_FRAGMENT;
         }
         else {
             setTitle("Мои тесты");
             upperNavigationView.setCheckedItem(R.id.my_tests_item);
+            actualFragment = ActualFragment.MY_TESTS_FRAGMENT;
         }
     }
 
@@ -110,4 +137,10 @@ public class BaseActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
     }
 
+
+    enum ActualFragment {
+        SEARCH_FRAGMENT,
+        CREATE_FRAGMENT,
+        MY_TESTS_FRAGMENT
+    }
 }

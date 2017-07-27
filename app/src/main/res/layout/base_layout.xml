@@ -13,7 +13,8 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         app:titleTextColor="@color/white"
-        android:theme="@style/AppBarStyle"/>
+        android:theme="@style/AppBarStyle"
+        android:elevation="2dp"/>
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
