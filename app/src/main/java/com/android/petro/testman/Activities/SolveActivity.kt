@@ -1,7 +1,6 @@
 package com.android.petro.testman.Activities
 
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.AsyncTask
@@ -19,14 +18,11 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.android.petro.testman.R
 import com.android.petro.testman.Support.*
-import com.google.gson.Gson
 import com.transitionseverywhere.*
 import com.transitionseverywhere.extra.Scale
 import kotlinx.android.synthetic.main.activity_solve.*
 import kotlinx.android.synthetic.main.solve_answer_layout.view.*
 import kotlinx.android.synthetic.main.solve_task_card.view.*
-import org.json.JSONArray
-import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -114,7 +110,7 @@ class SolveActivity : AppCompatActivity(), OnAnswerSave, OnTestReceive {
         if (test.settings!!.time > 0)
             timer = Timer(test.settings!!.time * 1000L, 1000)
         val recyclerView = task_recycler_view
-        adapter = TaskAdapter(test.tasks!!.tasks.size)
+        adapter = TaskAdapter(test.tasks!!.tasks!!.size)
         recyclerView.adapter = adapter
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -145,7 +141,7 @@ class SolveActivity : AppCompatActivity(), OnAnswerSave, OnTestReceive {
         }
 
         fun setData(position: Int) {
-            task = test!!.tasks!!.tasks.get(position)
+            task = test!!.tasks!!.tasks!!.get(position)
             Log.v("Answers size", task!!.answers.size.toString())
             adapter = AnswerAdapter(task!!.answers.size)
             recyclerView.adapter = adapter

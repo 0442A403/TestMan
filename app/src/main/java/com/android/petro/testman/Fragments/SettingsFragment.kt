@@ -11,8 +11,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import com.android.petro.testman.R
-import com.android.petro.testman.Support.onTestSave
 import com.android.petro.testman.Support.SettingsData
+import com.android.petro.testman.Support.onTestSave
 import com.pawegio.kandroid.onProgressChanged
 import com.pawegio.kandroid.textWatcher
 import kotlinx.android.synthetic.main.fragment_settings.view.*
@@ -103,7 +103,7 @@ class SettingsFragment(val callback: onTestSave) : Fragment() {
                 EMPTY_NAME -> Snackbar.make(v, "Введите название", Snackbar.LENGTH_SHORT).show()
                 EMPTY_TIMER -> Snackbar.make(v, "Введите время", Snackbar.LENGTH_SHORT).show()
                 else -> {
-                    if (!callback.checkEmpty())
+                    if (!callback.hasEmpty())
                         dialogBox(getTime() < 300 && layout.timer_checkbox.isChecked)
                 }
             }
@@ -116,7 +116,7 @@ class SettingsFragment(val callback: onTestSave) : Fragment() {
         val alertDialogBuilder = AlertDialog.Builder(activity)
         alertDialogBuilder.setMessage(if (b) "Вы выбрали время, меньшее 5 минут, сохранить?" else "Сохранить?")
         alertDialogBuilder.setPositiveButton("ОК") {
-            _, _ -> callback.onTestSave(saveData())
+            _, _ -> callback.onTestSaving(saveData())
         }
         alertDialogBuilder.setNegativeButton("Отмена") {
             _, _ ->

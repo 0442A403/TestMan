@@ -14,10 +14,10 @@ import android.view.ViewGroup;
 
 import com.android.petro.testman.Activities.BaseActivity;
 import com.android.petro.testman.R;
-import com.android.petro.testman.Support.onTestSave;
 import com.android.petro.testman.Support.SettingsData;
 import com.android.petro.testman.Support.TasksData;
 import com.android.petro.testman.Support.TestClass;
+import com.android.petro.testman.Support.onTestSave;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ import java.util.List;
 public class CreateFragment extends Fragment implements onTestSave {
     FragmentManager fragmentManager = null;
     ViewPager pager = null;
-    TasksFragment tasksFragment;
+    TaskConstructorFragment constructorFragment;
     SettingsFragment settingsFragment;
     BaseActivity activity;
     ProgressDialog dialog;
@@ -53,46 +53,42 @@ public class CreateFragment extends Fragment implements onTestSave {
 
     private void setUpViaAdapter() {
         Adapter adapter = new Adapter(fragmentManager);
-        tasksFragment = new TasksFragment();
+        constructorFragment = new TaskConstructorFragment();
         settingsFragment = new SettingsFragment(this);
-        adapter.addFragment(tasksFragment);
+        adapter.addFragment(constructorFragment);
         adapter.addFragment(settingsFragment);
         pager.setAdapter(adapter);
     }
 
     @Override
-    public void onTestSave(@NonNull SettingsData settings) {
-        TasksData tasksData = tasksFragment.getData();
-        if (tasksData == null) {
-            Snackbar.make(view, "Заполните данные", Snackbar.LENGTH_SHORT).show();
-            pager.setCurrentItem(0);
-            return;
-        }
+    public void onTestSaving(@NonNull SettingsData settings) {
+        TasksData tasksData = constructorFragment.getData();
 
         dialog = new ProgressDialog(getActivity());
         dialog.setCancelable(false);
         dialog.setMessage("Подождите");
         dialog.show();
 
+        assert tasksData != null;
         TestClass test = new TestClass(settings, tasksData, getActivity());
         test.save(this);
     }
 
     @Override
-    public boolean checkEmpty() {
-        TasksData tasksData = tasksFragment.getData();
-        if (tasksData == null) {
+    public void onTestSaved() {
+        dialog.dismiss();
+        activity.changeFragment(new SearchFragment());
+    }
+
+    @Override
+    public boolean hasEmpty() {
+        if (constructorFragment.getData() == null) {
             Snackbar.make(view, "Заполните данные", Snackbar.LENGTH_SHORT).show();
             pager.setCurrentItem(0);
             return true;
         }
-        return false;
-    }
-
-    @Override
-    public void onSaved() {
-        dialog.dismiss();
-        activity.changeFragment(new SearchFragment());
+        else
+            return false;
     }
 
     private class Adapter extends FragmentStatePagerAdapter {

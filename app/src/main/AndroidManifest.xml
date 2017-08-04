@@ -27,7 +27,7 @@
             android:name=".Activities.BaseActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".Activities.SolveActivity"></activity>
+        <activity android:name=".Activities.SolveActivity" />
     </application>
 
 </manifest>

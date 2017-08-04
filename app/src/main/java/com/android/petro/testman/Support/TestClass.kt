@@ -5,10 +5,10 @@ import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
 import com.google.gson.Gson
-import org.json.JSONArray
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.json.JSONArray
 import org.json.JSONObject
 
 
@@ -16,11 +16,10 @@ import org.json.JSONObject
  * General class for holding information about test
  */
 
-class TestClass() {
+class TestClass private constructor() {
 
     val SERVER_URL = "https://testman-o442a4o3.c9users.io/"
     val ADD_TEST = "add_test/"
-    val GET_TEST = "get_test/"
     var author: String? = null
     var settings: SettingsData? = null
     var tasks: TasksData? = null
@@ -33,7 +32,7 @@ class TestClass() {
         this.tasks = tasks
     }
 
-    constructor(response: String, context: Context) : this() {
+    private constructor(response: String) : this() {
         val gson = Gson()
         settings = gson.fromJson(response, SettingsData::class.java)
         val tasksJSONArray = JSONArray(JSONObject(response).getString("tasks"))
@@ -56,7 +55,6 @@ class TestClass() {
 //                json.put("author",
 //                        context.getSharedPreferences("AppPref", Context.MODE_PRIVATE)
 //                                .getString("author", null))*/
-
                 val list: ArrayList<String> = ArrayList()
                 for (task in tasks!!.tasks) {
                     val obj: String? = Gson().toJson(task)
@@ -105,9 +103,9 @@ class TestClass() {
 
             override fun onPostExecute(result: Void?) {
                 super.onPostExecute(result)
-                callBack.onSaved()
+                callBack.onTestSaved()
             }
-        }.execute();
+        }.execute()
     }
 
     companion object {
@@ -143,7 +141,7 @@ class TestClass() {
                 override fun onPostExecute(result: String) {
                     super.onPostExecute(result)
                     dialog.dismiss()
-                    callback.onTestReceived(TestClass(result, context))
+                    callback.onTestReceived(TestClass(result))
                 }
             }.execute()
         }
