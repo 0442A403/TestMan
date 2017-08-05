@@ -14,7 +14,7 @@ import okhttp3.Request
  */
 
 class Answer(val author: String,
-             val answers: ArrayList<Any>,
+             val answer: ArrayList<Any>,
              val time: Int) {
 
     fun sendData(testId : Int, context : Context, callback: OnAnswerSave) {
@@ -31,9 +31,11 @@ class Answer(val author: String,
                 val body = FormBody.Builder()
                         .add("test", testId.toString())
                         .add("author", author)
-                        .add("answer", answers.toString())
+                        .add("answer", answer.toString())
                         .add("time", time.toString())
                         .build()
+
+                Log.d("Answer on test", answer.toString())
 
                 val request = Request.Builder()
                         .url("https://testman-o442a4o3.c9users.io/add_answer/")

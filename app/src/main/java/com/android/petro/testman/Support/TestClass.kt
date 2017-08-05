@@ -45,39 +45,12 @@ class TestClass private constructor() {
     fun save(callBack: onTestSave) {
         object: AsyncTask<Void, Void, Void>() {
             override fun doInBackground(vararg params: Void?): Void? {
-//                /*val json : JSONObject = JSONObject()
-//                json.put("name", settings.name)
-//                json.put("fiveBegins", settings.fiveBegins)
-//                json.put("fourBegins", settings.fourBegins)
-//                json.put("threeBegins", settings.threeBegins)
-//                json.put("showWrongs", settings.showWrongs)
-//                json.put("time", settings.time)
-//                json.put("author",
-//                        context.getSharedPreferences("AppPref", Context.MODE_PRIVATE)
-//                                .getString("author", null))*/
                 val list: ArrayList<String> = ArrayList()
                 for (task in tasks!!.tasks) {
                     val obj: String? = Gson().toJson(task)
                     list.add(obj!!)
                 }
                 Log.v("jsonStrings", JSONArray(list).toString())
-
-//                /*json.put("tasks", JSONArray(list))
-//                val content: ContentValues = ContentValues()
-//                content.put("name", settings.name)
-//                content.put("fiveBegins", settings.fiveBegins)
-//                content.put("fourBegins", settings.fourBegins)
-//                content.put("threeBegins", settings.threeBegins)
-//                content.put("showWrongs", settings.showWrongs)
-//                content.put("time", settings.time)
-//                content.put("tasks", JSONArray(list).toString())
-//                content.put("author",
-//                        context.getSharedPreferences("AppPref", Context.MODE_PRIVATE)
-//                                .getString("author", null))
-//
-//                val writableDataBase = DataBase(context).writableDatabase
-//                writableDataBase.insert("tests", null, content)
-//                writableDataBase.close()*/
                 val formBody = FormBody.Builder()
                         .add("name", settings!!.name)
                         .add("author", author)

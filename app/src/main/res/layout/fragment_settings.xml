@@ -21,7 +21,8 @@
                 app:layout_marginEndPercent="7.5%"
                 android:layout_marginTop="16dp"
                 android:hint="@string/fill_name"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:inputType="textCapSentences"/>
 
             <TextView
                 android:id="@+id/mark_begins"

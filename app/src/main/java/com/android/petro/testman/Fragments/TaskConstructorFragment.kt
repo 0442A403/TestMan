@@ -133,10 +133,10 @@ class TaskConstructorFragment : Fragment() {
                 when (type) {
                     TaskType.RADIO_BOX -> {
                         radioButton.visibility = View.VISIBLE
-                        checkBox.visibility = View.GONE
+                        checkBox.visibility = View.INVISIBLE
                     }
                     else -> {
-                        radioButton.visibility = View.GONE
+                        radioButton.visibility = View.INVISIBLE
                         checkBox.visibility = View.VISIBLE
                     }
                 }
@@ -148,6 +148,7 @@ class TaskConstructorFragment : Fragment() {
                     radioButton.isChecked = checked
                 else if (type == TaskType.CHECK_BOX.code)
                     checkBox.isChecked = checked
+                changeInput(TaskType.getTypeByCode(type))
             }
 
             fun getData(): String {
