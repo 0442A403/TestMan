@@ -290,11 +290,13 @@ class SolveActivity : AppCompatActivity(), OnAnswerSave, OnTestReceive {
                 .setNegativeButton("Отмена", null)
                 .show()
     }
-
     override fun onBackPressed() {
         if (!startView)
             showSaveDialog()
         else {
+            setResult(BaseActivity.TEST_NOT_STARTED,
+                    Intent().putExtra("id", receivedId))
+            timer?.cancel()
             finish()
         }
     }
@@ -305,6 +307,7 @@ class SolveActivity : AppCompatActivity(), OnAnswerSave, OnTestReceive {
         else {
             setResult(BaseActivity.TEST_NOT_STARTED,
                     Intent().putExtra("id", receivedId))
+            timer?.cancel()
             finish()
         }
         return super.onOptionsItemSelected(item)
