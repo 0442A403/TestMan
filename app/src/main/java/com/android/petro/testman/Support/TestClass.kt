@@ -16,30 +16,20 @@ import org.json.JSONObject
  * General class for holding information about test
  */
 
-class TestClass private constructor() {
+class TestClass constructor(settings: SettingsData,
+                            tasks: TasksData,
+                            context: Context) {
 
     val SERVER_URL = "https://testman-o442a4o3.c9users.io/"
     val ADD_TEST = "add_test/"
-    var author: String? = null
+    var author: Int = -1
     var settings: SettingsData? = null
     var tasks: TasksData? = null
 
-    constructor(settings: SettingsData,
-                tasks: TasksData,
-                context: Context) : this() {
-        author = context.getSharedPreferences("AppPref", Context.MODE_PRIVATE).getString("author", null)
+    init {
+        author = context.getSharedPreferences("AppPref", Context.MODE_PRIVATE).getInt("VKId", -1)
         this.settings = settings
         this.tasks = tasks
-    }
-
-    private constructor(response: String) : this() {
-        val gson = Gson()
-        settings = gson.fromJson(response, SettingsData::class.java)
-        val tasksJSONArray = JSONArray(JSONObject(response).getString("tasks"))
-        val tasksArray = ArrayList<TaskClass>()
-        for (i in 0 .. tasksJSONArray.length() - 1)
-            tasksArray.add(gson.fromJson(tasksJSONArray.getString(i), TaskClass::class.java))
-        tasks = TasksData(tasksArray)
     }
 
     fun save(callBack: onTestSave) {
@@ -53,14 +43,13 @@ class TestClass private constructor() {
                 Log.v("jsonStrings", JSONArray(list).toString())
                 val formBody = FormBody.Builder()
                         .add("name", settings!!.name)
-                        .add("author", author)
+                        .add("author", author.toString())
                         .add("fiveBegins", settings!!.fiveBegins.toString())
                         .add("fourBegins", settings!!.fourBegins.toString())
                         .add("threeBegins", settings!!.threeBegins.toString())
                         .add("showWrongs", settings!!.showWrongs.toString())
                         .add("time", settings!!.time.toString())
                         .add("tasks", JSONArray(list).toString())
-                        .add("id", "2")
                         .build()
 
                 val request = Request.Builder()
@@ -83,11 +72,8 @@ class TestClass private constructor() {
 
     companion object {
         fun get(id: Int, context: Context, callback: OnTestReceive) {
-            object : AsyncTask<Void, Void, String>() {
-
+            object : AsyncTask<Void, Void, ServerResponse>() {
                 val dialog = ProgressDialog(context)
-                var response = "null_response"
-
                 override fun onPreExecute() {
                     super.onPreExecute()
                     dialog.setMessage("Загружаем тест")
@@ -95,9 +81,12 @@ class TestClass private constructor() {
                     dialog.show()
                 }
 
-                override fun doInBackground(vararg params: Void?): String {
+                override fun doInBackground(vararg params: Void?): ServerResponse {
                     val formBody = FormBody.Builder()
                             .add("id", id.toString())
+                            .add("user",
+                                    context.getSharedPreferences("AppPref", Context.MODE_PRIVATE)
+                                            .getInt("VKId", -1).toString())
                             .build()
 
                     val request = Request.Builder()
@@ -105,19 +94,31 @@ class TestClass private constructor() {
                             .post(formBody)
                             .build()
 
-                    response = JSONArray(OkHttpClient().newCall(request).execute().body().string())
-                            .getJSONObject(0).toString()
-                    Log.v("HttpResponse", response)
-                    return response
+                    val responseString = OkHttpClient().newCall(request).execute().body().string()
+                    Log.i("ReceivedTest", responseString)
+                    val jsonObject = JSONObject(responseString)
+                    val response = jsonObject.getJSONArray("test").getJSONObject(0).toString()
+                    val receivedId = jsonObject.getInt("id")
+                    return ServerResponse(response, receivedId)
                 }
 
-                override fun onPostExecute(result: String) {
+                override fun onPostExecute(result: ServerResponse) {
                     super.onPostExecute(result)
                     dialog.dismiss()
-                    callback.onTestReceived(TestClass(result))
+                    val gson = Gson()
+                    val settings = gson.fromJson(result.response, SettingsData::class.java)
+                    val tasksJSONArray = JSONArray(JSONObject(result.response).getString("tasks"))
+                    val tasksArray = ArrayList<TaskClass>()
+                    for (i in 0 .. tasksJSONArray.length() - 1)
+                        tasksArray.add(gson.fromJson(tasksJSONArray.getString(i), TaskClass::class.java))
+                    val tasks = TasksData(tasksArray)
+                    callback.onTestReceived(TestClass(settings, tasks, context), result.id)
                 }
             }.execute()
         }
+
+        private class ServerResponse(val response: String,
+                                     val id: Int)
     }
 
 

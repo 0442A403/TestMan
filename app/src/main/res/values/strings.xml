@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">TestMan</string>
+    <integer name="com_vk_sdk_AppId">6046576</integer>
     <string name="testman_description">Пройти тесты \n легко и быстро</string>
 
     <string name="login_with">Войти с помощью</string>

@@ -5,5 +5,5 @@ package com.android.petro.testman.Support
  * Callback for test's receiving
  */
 interface OnTestReceive {
-    fun onTestReceived(test: TestClass)
+    fun onTestReceived(test: TestClass, receivedId: Int)
 }

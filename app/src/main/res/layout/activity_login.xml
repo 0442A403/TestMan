@@ -79,16 +79,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/login_with"
                 android:textColor="@color/vk_color"
-                android:textSize="19sp"
-                android:onClick="showDialog"/>
+                android:textSize="19sp"/>
 
             <ImageView
                 android:id="@+id/login_vk_icon"
                 android:layout_width="38dp"
                 android:layout_height="38dp"
                 android:src="@drawable/vkicon"
-                android:layout_marginStart="6dp"
-                android:onClick="showDialog"/>
+                android:layout_marginStart="6dp" />
 
         </LinearLayout>
 
