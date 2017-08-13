@@ -35,8 +35,7 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:ellipsize="end"
-        android:textSize="20sp"
-        android:text="Название теста"
+        android:textSize="21sp"
         app:layout_constraintLeft_toRightOf="@id/test_item_icon_wrapper"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -52,7 +51,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/test_item_name"
         android:textSize="18sp"
-        android:text="Автор теста"
         android:ellipsize="end" />
 
 </android.support.constraint.ConstraintLayout>

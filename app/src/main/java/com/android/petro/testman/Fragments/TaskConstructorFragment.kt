@@ -134,10 +134,12 @@ class TaskConstructorFragment : Fragment() {
                     TaskType.RADIO_BOX -> {
                         radioButton.visibility = View.VISIBLE
                         checkBox.visibility = View.INVISIBLE
+                        checkBox.isChecked = false
                     }
                     else -> {
                         radioButton.visibility = View.INVISIBLE
                         checkBox.visibility = View.VISIBLE
+                        radioButton.isChecked = false
                     }
                 }
             }
@@ -191,6 +193,7 @@ class TaskConstructorFragment : Fragment() {
                     answerHolders.add(holder)
                 else
                     answerHolders.set(position, holder)
+                holder.changeInput(TaskType.getTypeByCode(type))
             }
 
             override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): AnswerHolder {
@@ -208,6 +211,7 @@ class TaskConstructorFragment : Fragment() {
             }
 
             fun changeInput(newType : TaskType) {
+                type = newType.code
                 for (holder in answerHolders)
                     holder.changeInput(newType)
             }

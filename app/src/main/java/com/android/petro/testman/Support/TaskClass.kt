@@ -16,6 +16,6 @@ class TaskClass(val question: String = "",
     fun isEmpty(): Boolean {
         return question.isEmpty()
                 || answers.contains("")
-                || if (type == TaskType.RADIO_BOX.code) (rights as Int) < 0 else (rights as ArrayList<*>).size > 0
+                || if (type == TaskType.RADIO_BOX.code) (rights as Int) < 0 else (rights as ArrayList<*>).size == 0
     }
 }

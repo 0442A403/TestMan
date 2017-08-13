@@ -2,10 +2,12 @@ package com.android.petro.testman.Activities
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.animation.LinearOutSlowInInterpolator
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -26,15 +28,15 @@ import kotlin.collections.ArrayList
 class SolveActivity : AppCompatActivity(), OnAnswerSave, OnTestReceive {
     private var timer : Timer? = null
     private var adapter : TaskAdapter? = null
-    private var testId : Int = -1
     private var startView = true
+    private var receivedId = -1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_solve)
         setSupportActionBar(toolbar_solve)
         title = intent.getStringExtra("name")
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true);
-        supportActionBar!!.setDisplayShowHomeEnabled(true);
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayShowHomeEnabled(true)
         test_name__entry.text = intent.getStringExtra("name")
         val time = intent.getIntExtra("time", -1)
         if (time > 0)
@@ -68,13 +70,13 @@ class SolveActivity : AppCompatActivity(), OnAnswerSave, OnTestReceive {
                 //changing phone
                 TransitionManager.beginDelayedTransition(primary_color_container,
                         Recolor().setDuration(1000))
-                primary_color_container.setBackgroundDrawable(
-                        ColorDrawable(resources.getColor(R.color.transparent)))
+                primary_color_container.background =
+                        ColorDrawable(ContextCompat.getColor(this, R.color.transparent))
 
                 //changing timer's text color
                 TransitionManager.beginDelayedTransition(solve_timer__wrapper,
                         Recolor().setDuration(1000))
-                solve_timer.setTextColor(resources.getColor(R.color.colorPrimary))
+                solve_timer.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary))
 
                 object : AsyncTask<Void, Void, Void>() {
                     override fun doInBackground(vararg mParams: Void?): Void? {
@@ -91,15 +93,15 @@ class SolveActivity : AppCompatActivity(), OnAnswerSave, OnTestReceive {
                 startView = false
             }
         }
-        testId = intent.getIntExtra("id", -1)
-        TestClass.get(testId, this, this)
+        TestClass.get(intent.getIntExtra("id", -1), this, this)
     }
 
     override fun onAnswerSaved() {
         finish()
     }
 
-    override fun onTestReceived(test: TestClass) {
+    override fun onTestReceived(test: TestClass, receivedId: Int) {
+        this.receivedId = receivedId
         if (test.settings!!.time > 0)
             timer = Timer(test.settings!!.time * 1000L, 1000, this.solve_timer)
         val recyclerView = task_recycler_view
@@ -114,12 +116,11 @@ class SolveActivity : AppCompatActivity(), OnAnswerSave, OnTestReceive {
     }
 
     private fun finishTest() {
-        getAnswers().sendData(testId, this, this)
-        finish()
+        getAnswers().sendData(this, this)
     }
 
     private fun getAnswers(): Answer {
-        return Answer(getSharedPreferences("AppPref", Context.MODE_PRIVATE).getString("author", "error"),
+        return Answer(receivedId,
                 adapter!!.getAnswers(),
                 if (timer != null) (timer!!.time / 1000).toInt() else 0)
     }
@@ -128,12 +129,25 @@ class SolveActivity : AppCompatActivity(), OnAnswerSave, OnTestReceive {
         private val question = view.question__solve
         private val recyclerView = view.answer_recycler_view__solve
         private var adapter: AnswerAdapter? = null
+
+        fun getAnswer(): Any {
+            return adapter!!.getAnswer()
+        }
+
+        fun setData(data: TaskClass, context: Context) {
+            adapter = AnswerAdapter(data.answers, data.type)
+            recyclerView.adapter = adapter
+            recyclerView.layoutManager = LinearLayoutManager(context)
+            question.text = data.question
+            recyclerView.setHasFixedSize(true)
+        }
+
         private class AnswerHolder(view: View,
                                    type: Int,
                                    checkedChangeCallback: CheckedChangeCallback): RecyclerView.ViewHolder(view) {
-            val radioButton = view.radio_button__solve!!
-            val checkBox = view.check_box__solve!!
-            val answer = view.answer__solve!!
+            private val radioButton = view.radio_button__solve!!
+            private val checkBox = view.check_box__solve!!
+            private val answer = view.answer__solve!!
             init {
                 answer.setOnClickListener {
                     if (type == TaskType.RADIO_BOX.code)
@@ -151,6 +165,22 @@ class SolveActivity : AppCompatActivity(), OnAnswerSave, OnTestReceive {
             fun removeChecked() {
                 radioButton.isChecked = false
             }
+
+            fun setData(answerData: String, type: Int) {
+                answer.text = answerData
+                if (type == TaskType.CHECK_BOX.code) {
+                    radioButton.visibility = View.GONE
+                    checkBox.visibility =  View.VISIBLE
+                    radioButton.isChecked = false
+                }
+            }
+
+            fun isChecked(): Boolean {
+                if (radioButton.visibility == View.VISIBLE)
+                    return radioButton.isChecked
+                else
+                    return checkBox.isChecked
+            }
         }
 
         private class AnswerAdapter(val data: ArrayList<String>,
@@ -167,16 +197,12 @@ class SolveActivity : AppCompatActivity(), OnAnswerSave, OnTestReceive {
                 for (i in 0 .. count - 1) {
                     val j = randomObject.nextInt(count - i)
                     random[i] = array[j]
-                    array.remove(j)
+                    array.removeAt(j)
                 }
             }
 
             override fun onBindViewHolder(holder: AnswerHolder?, position: Int) {
-                holder!!.answer.text = data[random[position]]
-                if (type == TaskType.CHECK_BOX.code) {
-                    holder.radioButton.visibility = View.GONE
-                    holder.checkBox.visibility =  View.VISIBLE
-                }
+                holder!!.setData(data[random[position]], type)
             }
 
             override fun getItemCount(): Int {
@@ -192,14 +218,14 @@ class SolveActivity : AppCompatActivity(), OnAnswerSave, OnTestReceive {
             fun getAnswer(): Any {
                 if (type == TaskType.RADIO_BOX.code) {
                     for (i in 0 .. answers.size - 1)
-                        if (answers.get(i).radioButton.isChecked)
+                        if (answers.get(i).isChecked())
                             return random[i]
                     return -1
                 }
                 else /*if (task!!.type == TaskType.CHECK_BOX.code)*/ {
                     val answerList = ArrayList<Int>()
                     for (i in 0 .. answers.size - 1)
-                        if (answers.get(i).checkBox.isChecked)
+                        if (answers.get(i).isChecked())
                             answerList.add(random[i])
                     return answerList
                 }
@@ -210,18 +236,6 @@ class SolveActivity : AppCompatActivity(), OnAnswerSave, OnTestReceive {
                     if (holder != summonHolder)
                         holder.removeChecked()
             }
-        }
-
-        fun getAnswer(): Any {
-            return adapter!!.getAnswer()
-        }
-
-        fun setData(data: TaskClass, context: Context) {
-            adapter = AnswerAdapter(data.answers, data.type)
-            recyclerView.adapter = adapter
-            recyclerView.layoutManager = LinearLayoutManager(context)
-            question.text = data.question
-            recyclerView.setHasFixedSize(true)
         }
 
         interface CheckedChangeCallback {
@@ -255,14 +269,14 @@ class SolveActivity : AppCompatActivity(), OnAnswerSave, OnTestReceive {
         }
     }
 
-    private class Timer(time: Long, periodicity: Long, private val timer: TextView): CountDownTimer(time, periodicity) {
+    inner private class Timer(time: Long, periodicity: Long, private val timer: TextView): CountDownTimer(time, periodicity) {
         var time: Long = -1
         override fun onTick(millisUntilFinished: Long) {
             time = millisUntilFinished
             timer.text = Formatter().format("%02d:%02d", millisUntilFinished / 60000, millisUntilFinished % 60000 / 1000    ).toString()
         }
         override fun onFinish() {
-
+            finishTest()
         }
     }
 
@@ -280,15 +294,19 @@ class SolveActivity : AppCompatActivity(), OnAnswerSave, OnTestReceive {
     override fun onBackPressed() {
         if (!startView)
             showSaveDialog()
-        else
+        else {
             finish()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (!startView)
             showSaveDialog()
-        else
+        else {
+            setResult(BaseActivity.TEST_NOT_STARTED,
+                    Intent().putExtra("id", receivedId))
             finish()
+        }
         return super.onOptionsItemSelected(item)
     }
 }

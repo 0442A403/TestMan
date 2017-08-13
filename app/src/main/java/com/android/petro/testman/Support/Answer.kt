@@ -13,11 +13,11 @@ import okhttp3.Request
  * General class for storing answer's information
  */
 
-class Answer(val author: String,
-             val answer: ArrayList<Any>,
-             val time: Int) {
+class Answer(private val id: Int,
+             private val answer: ArrayList<Any>,
+             private val time: Int) {
 
-    fun sendData(testId : Int, context : Context, callback: OnAnswerSave) {
+    fun sendData(context : Context, callback: OnAnswerSave) {
         val dialog = ProgressDialog(context)
         object : AsyncTask<Void, Void, String>() {
             override fun onPreExecute() {
@@ -29,10 +29,9 @@ class Answer(val author: String,
 
             override fun doInBackground(vararg params: Void): String {
                 val body = FormBody.Builder()
-                        .add("test", testId.toString())
-                        .add("author", author)
                         .add("answer", answer.toString())
                         .add("time", time.toString())
+                        .add("id", id.toString())
                         .build()
 
                 Log.d("Answer on test", answer.toString())

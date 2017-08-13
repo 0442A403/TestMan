@@ -1,8 +1,9 @@
 package com.android.petro.testman.Activities;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -12,14 +13,22 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.webkit.CookieManager;
 
 import com.android.petro.testman.Fragments.CreateFragment;
 import com.android.petro.testman.Fragments.MyTestsFragment;
 import com.android.petro.testman.Fragments.SearchFragment;
 import com.android.petro.testman.R;
+import com.vk.sdk.VKAccessToken;
+import com.vk.sdk.VKSdk;
+
+import java.io.IOException;
+
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 /**
  * Created by petro on 11.06.2017.
@@ -28,11 +37,12 @@ import com.android.petro.testman.R;
 
 public class BaseActivity extends AppCompatActivity {
 
-    DrawerLayout drawerLayout;
-    ActionBarDrawerToggle actionBarDrawerToggle;
-    Toolbar toolbar;
-    NavigationView upperNavigationView;
-    ActualFragment actualFragment = ActualFragment.SEARCH_FRAGMENT;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private Toolbar toolbar;
+    private NavigationView upperNavigationView;
+    private ActualFragment actualFragment = ActualFragment.SEARCH_FRAGMENT;
+    public static int TEST_NOT_STARTED = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +54,7 @@ public class BaseActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.app_name, R.string.app_name);
-        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
 
         upperNavigationView = (NavigationView) findViewById(R.id.upper_nav_view);
         NavigationView lowerNavigationView = (NavigationView) findViewById(R.id.exit_nav_view);
@@ -95,12 +105,8 @@ public class BaseActivity extends AppCompatActivity {
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        SharedPreferences.Editor editor = getSharedPreferences("AppPref", MODE_PRIVATE).edit();
-                        editor.putString("Token", null);
-                        editor.putLong("Last Opening", 0L);
-                        editor.apply();
+                        VKSdk.logout();
                         Intent intent = new Intent(BaseActivity.this, LoginActivity.class);
-                        CookieManager.getInstance().removeAllCookie();
                         startActivity(intent);
                         finish();
                         return false;
@@ -108,7 +114,7 @@ public class BaseActivity extends AppCompatActivity {
                 });
 
         changeFragment(new SearchFragment());
-
+        Log.i("Token", VKAccessToken.ACCESS_TOKEN);
     }
 
     public void changeFragment(Fragment fragment) {
@@ -138,9 +144,54 @@ public class BaseActivity extends AppCompatActivity {
     }
 
 
-    enum ActualFragment {
+    private enum ActualFragment {
         SEARCH_FRAGMENT,
         CREATE_FRAGMENT,
         MY_TESTS_FRAGMENT
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == TEST_NOT_STARTED) {
+            new AsyncTask<Void, Void, Void>() {
+                ProgressDialog dialog;
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+                    dialog = new ProgressDialog(BaseActivity.this);
+                    dialog.setTitle("Подождите");
+                    dialog.setCancelable(false);
+                    dialog.show();
+                }
+
+                @Override
+                protected Void doInBackground(Void... params) {
+                    FormBody body = new FormBody.Builder()
+                            .add("id", String.valueOf(data.getIntExtra("id", -1)))
+                            .build();
+                    Log.i("InterruptedAnswerId", String.valueOf(data.getIntExtra("id", -89)));
+
+                    Request request = new Request.Builder()
+                            .url("https://testman-o442a4o3.c9users.io/remove_answer/")
+                            .post(body)
+                            .build();
+
+                    try {
+                        String responseString = new OkHttpClient().newCall(request).execute().body().string();
+                        Log.i("AnswerInterrupted", responseString);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    super.onPostExecute(aVoid);
+                    dialog.dismiss();
+                }
+            }.execute();
+        }
     }
 }

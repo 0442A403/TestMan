@@ -30,7 +30,7 @@
         app:layout_constraintRight_toLeftOf="@+id/remove_answer"
         app:layout_constraintLeft_toRightOf="@id/checkbox__answer_pattern"
         app:layout_constraintTop_toTopOf="parent"
-        android:inputType="text"
+        android:inputType="textCapSentences"
         app:backgroundTint="@color/colorAccent" />
 
     <ImageView
