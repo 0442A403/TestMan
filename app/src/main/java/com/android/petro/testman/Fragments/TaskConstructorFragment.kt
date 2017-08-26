@@ -1,23 +1,51 @@
 package com.android.petro.testman.Fragments
 
+import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.*
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.RadioButton
+import android.widget.TextView
 import com.android.petro.testman.R
 import com.android.petro.testman.Support.TaskClass
+import com.android.petro.testman.Support.TaskData
 import com.android.petro.testman.Support.TaskType
-import com.android.petro.testman.Support.TasksData
 import kotlinx.android.synthetic.main.creating_answer_pattern.view.*
 import kotlinx.android.synthetic.main.creating_task_pattern.view.*
+import kotlinx.android.synthetic.main.task_settings_layout.view.*
 
-class TaskConstructorFragment : Fragment() {
+class TaskConstructorFragment() : Fragment() {
     private var taskAdapter : TaskAdapter? = null
+    private var fillTaskData: TaskData? = null
+    constructor(fillTaskData: TaskData): this() {
+        val tasks = ArrayList<TaskClass>()
+        for (task in fillTaskData.tasks) {
+            val correctRights: Any
+            if (task.rights is Double)
+                correctRights = task.rights.toInt()
+            else {
+                val rightArray = ArrayList<Int>()
+                for (right in task.rights as ArrayList<Double>)
+                    rightArray.add(right.toInt())
+                correctRights = rightArray
+            }
+            tasks.add(TaskClass(task.question,
+                    task.answers,
+                    task.type,
+                    correctRights,
+                    task.scores,
+                    task.photo))
+        }
+        this.fillTaskData = TaskData(tasks)
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater!!.inflate(R.layout.fragment_tasks, container, false)
@@ -35,9 +63,13 @@ class TaskConstructorFragment : Fragment() {
             }
         })
 
-        taskAdapter = TaskAdapter(floatButton)
+        taskAdapter = if (fillTaskData != null)
+            TaskAdapter(floatButton, activity, fillTaskData!!)
+        else
+            TaskAdapter(floatButton, activity)
         taskRecycle.adapter = taskAdapter
         taskRecycle.layoutManager = LinearLayoutManager(activity)
+
 
         return view
     }
@@ -46,30 +78,61 @@ class TaskConstructorFragment : Fragment() {
         taskAdapter!!.addTask()
     }
 
-    fun getData() : TasksData? {
+    fun getData() : TaskData? {
         val data = taskAdapter!!.getData()
-        if (data.isFilled())
-            return taskAdapter!!.getData()
+        return if (data.isFilled())
+            taskAdapter!!.getData()
         else
-            return null
+            null
     }
 
-    private class TaskHolder(view : View,
+    private class TaskHolder(view: View,
                              private val removeTaskCallback: removeTaskCallback,
-                             floatButton: FloatingActionButton) :
+                             floatButton: FloatingActionButton,
+                             context: Context) :
             RecyclerView.ViewHolder(view),
             View.OnCreateContextMenuListener {
         private val answerAdapter : AnswerAdapter
         private var type = TaskType.RADIO_BOX
         private val question = view.question
+        private val scoreView: TextView
+        var scores = 5
+            set(value) {
+                field = value
+                scoreView.text = value.toString()
+            }
         var taskPosition = -1
         init {
             answerAdapter = AnswerAdapter(floatButton)
             val recyclerView = view.answer_recycle_view
             recyclerView.adapter = answerAdapter
             recyclerView.layoutManager = LinearLayoutManager(view.context)
-            itemView.setOnCreateContextMenuListener(this)
+//            itemView.setOnCreateContextMenuListener(this)
             view.add_answer_button.setOnClickListener { addAnswer() }
+            val dialog= Dialog(context)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            val dialogView = LayoutInflater.from(context).inflate(R.layout.task_settings_layout, null, false)
+            dialogView.increase_scores.setOnClickListener {
+                scores++
+            }
+            dialogView.reduce_scores.setOnClickListener {
+                scores--
+            }
+            dialogView.change_input.setOnClickListener {
+                changeInput(if (type == TaskType.RADIO_BOX) TaskType.CHECK_BOX else TaskType.RADIO_BOX)
+                dialog.hide()
+            }
+            dialogView.delete.setOnClickListener {
+                removeTask()
+                dialog.hide()
+            }
+            dialog.setContentView(dialogView)
+            scoreView = dialogView.scores
+            view.setOnLongClickListener {
+                dialog.show()
+                return@setOnLongClickListener false
+            }
+
         }
 
         private fun addAnswer() {
@@ -87,15 +150,20 @@ class TaskConstructorFragment : Fragment() {
                     data.answers,
                     data.type,
                     data.rights)
+            scores = data.scores
+            changeInput(TaskType.getTypeByCode(data.type))
         }
 
         fun getData(): TaskClass {
-            return TaskClass(
+            val task = TaskClass(
                     question.text.toString(),
                     answerAdapter.getData(),
                     type.code,
                     answerAdapter.getRights(type),
+                    scores,
                     Object())
+            Log.i("TestManInformation", "Task $taskPosition: ${task.question}\n${task.answers}\n${task.type}\n${task.rights}\n${task.scores}")
+            return task
         }
 
         private fun removeTask() {
@@ -153,9 +221,7 @@ class TaskConstructorFragment : Fragment() {
                 changeInput(TaskType.getTypeByCode(type))
             }
 
-            fun getData(): String {
-                return answer.text.toString()
-            }
+            fun getData(): String = answer.text.toString()
 
             fun isChecked(type: TaskType): Boolean {
                 if (type == TaskType.RADIO_BOX)
@@ -184,7 +250,7 @@ class TaskConstructorFragment : Fragment() {
                     holder.setData(data[position],
                             type,
                             if (type == TaskType.RADIO_BOX.code)
-                                (rights as Int) == position
+                                    (rights as Int) == position
                             else
                                 (rights as ArrayList<*>).contains(position))
                 else
@@ -192,7 +258,7 @@ class TaskConstructorFragment : Fragment() {
                 if (position >= answerHolders.size)
                     answerHolders.add(holder)
                 else
-                    answerHolders.set(position, holder)
+                    answerHolders[position] = holder
                 holder.changeInput(TaskType.getTypeByCode(type))
             }
 
@@ -201,9 +267,7 @@ class TaskConstructorFragment : Fragment() {
                         .inflate(R.layout.creating_answer_pattern, parent, false), this, this)
             }
 
-            override fun getItemCount(): Int {
-                return size
-            }
+            override fun getItemCount(): Int = size
 
             fun addAnswer() {
                 size++
@@ -218,7 +282,8 @@ class TaskConstructorFragment : Fragment() {
 
             fun setData(answers: ArrayList<String>, taskType : Int, taskRights: Any) {
                 data = answers
-                type = taskType
+                changeInput(TaskType.getTypeByCode(taskType))
+                Log.d("TestManDebug", "s: $taskType")
                 rights = taskRights
                 size = answers.size
                 notifyDataSetChanged()
@@ -226,15 +291,15 @@ class TaskConstructorFragment : Fragment() {
 
             fun getRights(type : TaskType): Any {
                 if (type == TaskType.RADIO_BOX) {
-                    for (i in 0 .. answerHolders.size - 1)
-                        if (answerHolders.get(i).isChecked(type))
+                    for (i in 0 until answerHolders.size)
+                        if (answerHolders[i].isChecked(type))
                             return i
                     return -1
                 }
                 else {
                     val rights = ArrayList<Int>()
-                    for (i in 0 .. answerHolders.size - 1)
-                        if (answerHolders.get(i).isChecked(type))
+                    for (i in 0 until answerHolders.size)
+                        if (answerHolders[i].isChecked(type))
                             rights.add(i)
                     return rights
                 }
@@ -242,8 +307,7 @@ class TaskConstructorFragment : Fragment() {
 
             fun getData(): ArrayList<String> {
                 val answers = ArrayList<String>()
-                for (holder in answerHolders)
-                    answers.add(holder.getData())
+                answerHolders.mapTo(answers) { it.getData() }
                 return answers
             }
 
@@ -251,8 +315,8 @@ class TaskConstructorFragment : Fragment() {
                 size--
                 answerHolders.removeAt(position)
                 data = getData()
-                for (i in position .. answerHolders.size - 1)
-                    answerHolders.get(i).answerPosition = i
+                for (i in position until answerHolders.size)
+                    answerHolders[i].answerPosition = i
                 notifyItemRemoved(position)
                 floatButton.show()
                 if (size == 1)
@@ -294,30 +358,38 @@ class TaskConstructorFragment : Fragment() {
     }
 
 
-    private class TaskAdapter(val floatButton : FloatingActionButton) : RecyclerView.Adapter<TaskHolder>(), removeTaskCallback{
+    private class TaskAdapter(val floatButton : FloatingActionButton,
+                              val context: Context) : RecyclerView.Adapter<TaskHolder>(), removeTaskCallback{
         private var size = 1
         private val taskHolders = ArrayList<TaskHolder>()
-        private var data = TasksData()
+        private var data = TaskData()
+
+        constructor(floatButton: FloatingActionButton,
+                    context: Context,
+                    fillTaskData: TaskData): this(floatButton, context) {
+            data = fillTaskData
+            size = fillTaskData.tasks.size
+        }
+
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TaskHolder {
             return TaskHolder(
                     LayoutInflater.from(parent!!.context)
                             .inflate(R.layout.creating_task_pattern, parent, false),
                     this,
-                    floatButton)
+                    floatButton,
+                    context)
         }
 
-        override fun getItemCount(): Int {
-            return size
-        }
+        override fun getItemCount(): Int = size
 
         override fun onBindViewHolder(holder: TaskHolder?, position: Int) {
             holder!!.taskPosition = position
             if (position < data.tasks.size)
-                holder.setData(data.tasks.get(position))
+                holder.setData(data.tasks[position])
             else
                 holder.setData(TaskClass())
             if (position < taskHolders.size)
-                taskHolders.set(position, holder)
+                taskHolders[position] = holder
             else
                 taskHolders.add(holder)
         }
@@ -327,19 +399,19 @@ class TaskConstructorFragment : Fragment() {
             notifyItemInserted(size - 1)
         }
 
-        fun getData(): TasksData {
+        fun getData(): TaskData {
             val dataList = ArrayList<TaskClass>()
-            for (holder in taskHolders)
-                dataList.add(holder.getData())
-            return TasksData(dataList)
+            taskHolders.mapTo(dataList) { it.getData() }
+            Log.d("TestManDebug", "taskHolders size: ${taskHolders.size}")
+            return TaskData(dataList)
         }
 
         override fun removeTask(position: Int) {
             size--
             taskHolders.removeAt(position)
             data = getData()
-            for (i in position .. taskHolders.size - 1)
-                taskHolders.get(i).taskPosition = i
+            for (i in position until taskHolders.size)
+                taskHolders[i].taskPosition = i
             notifyItemRemoved(position)
             floatButton.show()
             if (size == 0)

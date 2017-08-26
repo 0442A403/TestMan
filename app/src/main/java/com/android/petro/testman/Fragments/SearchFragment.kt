@@ -18,13 +18,14 @@ import android.view.ViewGroup
 import android.widget.EditText
 import com.android.petro.testman.Activities.SolveActivity
 import com.android.petro.testman.R
+import com.android.petro.testman.Support.Dictionary
 import com.android.petro.testman.Support.OnUpdatedDataListener
 import com.bumptech.glide.Glide
 import com.vk.sdk.api.*
 import com.vk.sdk.api.methods.VKApiUsers
 import com.vk.sdk.api.model.VKList
 import kotlinx.android.synthetic.main.fragment_search.view.*
-import kotlinx.android.synthetic.main.test_item.view.*
+import kotlinx.android.synthetic.main.item_with_image.view.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONArray
@@ -40,7 +41,6 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
     private val testData: ArrayList<Test> = ArrayList()
     private val relevantTestData: ArrayList<Test> = ArrayList()
     private var adapter: TestAdapter? = null
-    private var authors = ArrayList<String>()
     override fun onCreateView(inflater: LayoutInflater?,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -48,9 +48,9 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
         adapter = TestAdapter(relevantTestData,
                 testData,
                 activity,
-                view.search_edit_text!!)
+                view.edit_text__search!!)
 
-        val recycleView = view.task_recycle_view
+        val recycleView = view.recycler_view__search
         recycleView.adapter = adapter
         recycleView.layoutManager = LinearLayoutManager(activity)
         updateData()
@@ -65,7 +65,7 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
         if (array != null) {
             testData.clear()
             relevantTestData.clear()
-            for (i in 0..array.length() - 1) {
+            for (i in 0 until array.length()) {
                 val jsonTest = array.getJSONObject(i)
                 val test = Test(jsonTest.getInt("id"),
                         jsonTest.getString("name"),
@@ -79,8 +79,8 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
     }
 
     private class TestHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val testName = view.test_item_name!!
-        val testAuthor = view.test_item_description!!
+        val testName = view.first_field__item_with_image!!
+        val testAuthor = view.second_field__item_with_image!!
         val testIcon = view.test_item_icon!!
     }
 
@@ -101,7 +101,7 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
                         for (word in s.split(" "))
                             for (test in testData)
                                 if (!relevantTestData.contains(test)
-                                        && (users[relevantTestData.indexOf(test)]!!.name.contains(word, true)
+                                        && (users[test.authorId]!!.name.contains(word, true)
                                         || test.name.contains(word, true)))
                                     relevantTestData.add(test)
                     }
@@ -122,26 +122,22 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
                     .load(users[relevantTestData[position].authorId]!!.photo)
                     .into(holder.testIcon)
             holder.view.setOnClickListener {
-                v->
-                activity.startActivityForResult(
+                activity.startActivity(
                         Intent(activity, SolveActivity::class.java)
                                 .putExtra("id", relevantTestData.get(position).testId)
                                 .putExtra("time", relevantTestData.get(position).time)
-                                .putExtra("name", relevantTestData.get(position).name),
-                        0)
-                Log.v("TestId", relevantTestData.get(position).testId.toString())
+                                .putExtra("name", relevantTestData.get(position).name))
+                Log.v("TestId", relevantTestData[position].testId.toString())
             }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TestHolder {
             return TestHolder(
                     LayoutInflater.from(parent!!.context)
-                            .inflate(R.layout.test_item, parent, false))
+                            .inflate(R.layout.item_with_image, parent, false))
         }
 
-        override fun getItemCount(): Int {
-            return relevantTestData.size
-        }
+        override fun getItemCount(): Int = relevantTestData.size
 
         fun updateData() {
             val idString = StringBuilder()
@@ -149,7 +145,7 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
                 if (!idString.contains(test.authorId.toString()))
                     idString.append("${test.authorId}, ")
             if (idString.isNotEmpty())
-                idString.removeRange(idString.length - 3 .. idString.length - 1)
+                idString.removeRange(idString.length - 3 until idString.length)
             val params: HashMap<String, Any> = HashMap()
             params.put(VKApiConst.USER_IDS, idString.toString())
             params.put(VKApiConst.FIELDS, VKApiConst.PHOTO)
@@ -158,67 +154,9 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
                     .executeWithListener(
                             object : VKRequest.VKRequestListener() {
                                 override fun onComplete(response: VKResponse?) {
-                                    Log.v("ServerResponse", response!!.responseString)
+                                    Log.v("TestManNetwork", response!!.responseString)
                                     val vkUsers = response.parsedModel as VKList<*>
-
-                                    val dictionary = HashMap<String, String>()
-                                    dictionary.put("th", "з")
-                                    dictionary.put("ch", "ч")
-                                    dictionary.put("Th", "З")
-                                    dictionary.put("Ch", "Ч")
-                                    dictionary.put("a", "а")
-                                    dictionary.put("b", "б")
-                                    dictionary.put("c", "ц")
-                                    dictionary.put("d", "д")
-                                    dictionary.put("e", "е")
-                                    dictionary.put("f", "ф")
-                                    dictionary.put("g", "г")
-                                    dictionary.put("h", "х")
-                                    dictionary.put("i", "и")
-                                    dictionary.put("j", "")
-                                    dictionary.put("k", "к")
-                                    dictionary.put("l", "л")
-                                    dictionary.put("m", "м")
-                                    dictionary.put("n", "н")
-                                    dictionary.put("o", "о")
-                                    dictionary.put("p", "п")
-                                    dictionary.put("q", "к")
-                                    dictionary.put("r", "р")
-                                    dictionary.put("s", "с")
-                                    dictionary.put("t", "т")
-                                    dictionary.put("u", "у")
-                                    dictionary.put("v", "в")
-                                    dictionary.put("w", "")
-                                    dictionary.put("x", "")
-                                    dictionary.put("y", "и")
-                                    dictionary.put("z", "з")
-                                    dictionary.put("A", "А")
-                                    dictionary.put("B", "Б")
-                                    dictionary.put("C", "Ц")
-                                    dictionary.put("D", "Д")
-                                    dictionary.put("E", "Е")
-                                    dictionary.put("F", "Ф")
-                                    dictionary.put("G", "Г")
-                                    dictionary.put("H", "Х")
-                                    dictionary.put("I", "И")
-                                    dictionary.put("J", "")
-                                    dictionary.put("K", "К")
-                                    dictionary.put("L", "Л")
-                                    dictionary.put("M", "М")
-                                    dictionary.put("N", "Н")
-                                    dictionary.put("O", "О")
-                                    dictionary.put("P", "П")
-                                    dictionary.put("Q", "К")
-                                    dictionary.put("R", "Р")
-                                    dictionary.put("S", "С")
-                                    dictionary.put("T", "Т")
-                                    dictionary.put("U", "У")
-                                    dictionary.put("V", "В")
-                                    dictionary.put("W", "")
-                                    dictionary.put("X", "")
-                                    dictionary.put("Y", "И")
-                                    dictionary.put("Z", "З")
-
+                                    val dictionary = Dictionary().dictionary
                                     for (user in vkUsers) {
                                         var author = user.fields.getString("first_name") + " " + user.fields.getString("last_name")
                                         for ((key, value) in dictionary)
@@ -228,10 +166,9 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
                                     }
                                     notifyDataSetChanged()
                                 }
-
                                 override fun onError(error: VKError?) {
                                     super.onError(error)
-                                    Log.v("ServerResponseError", error?.errorMessage)
+                                    Log.v("TestManNetworkError", error?.errorMessage)
                                 }
                             })
         }
@@ -251,7 +188,8 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
         override fun onPreExecute() {
             super.onPreExecute()
             dialog.setCancelable(false)
-            dialog.setMessage("Подождите")
+            dialog.setTitle("TestMan")
+            dialog.setMessage("Загружаем тесты")
             dialog.show()
         }
 

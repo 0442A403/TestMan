@@ -46,7 +46,6 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="top"
                 app:menu="@menu/main_navigation"
-                app:headerLayout="@layout/nav_header"
                 android:theme="@style/AppBarStyle"/>
 
             <android.support.design.widget.NavigationView

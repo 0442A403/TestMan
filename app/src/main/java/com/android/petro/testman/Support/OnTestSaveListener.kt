@@ -5,8 +5,6 @@ package com.android.petro.testman.Support
  * from SettingsFragment to CreateFragment through
  * SettingsData
  */
-interface onTestSave {
+interface OnTestSaveListener: OnTestSavedListener, HasEmpty {
     fun onTestSaving(settings : SettingsData)
-    fun onTestSaved()
-    fun hasEmpty(): Boolean
 }

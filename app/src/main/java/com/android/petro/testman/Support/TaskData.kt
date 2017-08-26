@@ -6,7 +6,7 @@ import kotlin.collections.ArrayList
 /**
  * Support class for transferring tasks information throw callback
  */
-class TasksData(val tasks: ArrayList<TaskClass>) {
+class TaskData(val tasks: ArrayList<TaskClass>) {
     constructor(): this(ArrayList(Arrays.asList(TaskClass())))
 
     fun isFilled(): Boolean {

@@ -8,6 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlActivated">@color/colorPrimary</item>
         <item name="colorControlHighlight">@color/colorPrimary</item>
+
+        <!-- Required for Lollipop. -->
+        <item name="android:overlapAnchor">false</item>
+        <item name="android:dropDownVerticalOffset">4.0dip</item>
     </style>
     
     <style name="AppBarStyle" parent="Theme.AppCompat.Light.NoActionBar">
@@ -28,7 +32,5 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
-    
-
 
 </resources>

@@ -1,9 +1,7 @@
 package com.android.petro.testman.Activities;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -18,38 +16,34 @@ import android.view.Gravity;
 import android.view.MenuItem;
 
 import com.android.petro.testman.Fragments.CreateFragment;
-import com.android.petro.testman.Fragments.MyTestsFragment;
+import com.android.petro.testman.Fragments.MyTestsControlFragment;
 import com.android.petro.testman.Fragments.SearchFragment;
 import com.android.petro.testman.R;
-import com.vk.sdk.VKAccessToken;
+import com.android.petro.testman.Support.OnBackPressedListener;
+import com.android.petro.testman.Support.OnTestSavedListener;
 import com.vk.sdk.VKSdk;
-
-import java.io.IOException;
-
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 
 /**
  * Created by petro on 11.06.2017.
  * Base Activity for all my fragments
  */
 
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity implements OnTestSavedListener {
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
-    private Toolbar toolbar;
     private NavigationView upperNavigationView;
     private ActualFragment actualFragment = ActualFragment.SEARCH_FRAGMENT;
-    public static int TEST_NOT_STARTED = 1;
+    private OnBackPressedListener onBackPressedListener;
+    private final OnTestSavedListener onTestSavedListener = this;
+    public static final int RESULT_TEST_UPDATED = -22;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.base_layout);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
@@ -76,8 +70,11 @@ public class BaseActivity extends AppCompatActivity {
                                         public void onClick(DialogInterface dialog, int which) {
                                             changeFragment(
                                                     item.getItemId() == R.id.search_test_item?
+                                                            ActualFragment.SEARCH_FRAGMENT
+                                                    : ActualFragment.MY_TESTS_FRAGMENT,
+                                                    item.getItemId() == R.id.search_test_item?
                                                             new SearchFragment()
-                                                            : new MyTestsFragment());
+                                                            : new MyTestsControlFragment());
                                             drawerLayout.closeDrawer(Gravity.START);
                                         }
                                     })
@@ -87,15 +84,22 @@ public class BaseActivity extends AppCompatActivity {
                         }
                         switch (item.getItemId()) {
                             case R.id.search_test_item:
-                                changeFragment(new SearchFragment());
+                                SearchFragment sFragment = new SearchFragment();
+                                onBackPressedListener = null;
+                                changeFragment(ActualFragment.SEARCH_FRAGMENT, sFragment);
                                 drawerLayout.closeDrawer(Gravity.START);
                                 break;
                             case R.id.create_test_item:
-                                changeFragment(new CreateFragment(getSupportFragmentManager(), BaseActivity.this));
+                                CreateFragment cFragment = new CreateFragment(getSupportFragmentManager(), onTestSavedListener);
+                                onBackPressedListener = null;
+                                changeFragment(ActualFragment.CREATE_FRAGMENT, cFragment);
                                 drawerLayout.closeDrawer(Gravity.START);
                                 break;
                             case R.id.my_tests_item:
-                                startActivity(new Intent(BaseActivity.this, SolveActivity.class));
+                                MyTestsControlFragment mtcFragment = new MyTestsControlFragment();
+                                onBackPressedListener = mtcFragment;
+                                changeFragment(ActualFragment.MY_TESTS_FRAGMENT, mtcFragment);
+                                drawerLayout.closeDrawer(Gravity.START);
                                 break;
                         }
                         return true;
@@ -113,27 +117,26 @@ public class BaseActivity extends AppCompatActivity {
                     }
                 });
 
-        changeFragment(new SearchFragment());
-        Log.i("Token", VKAccessToken.ACCESS_TOKEN);
+        changeFragment(ActualFragment.SEARCH_FRAGMENT, new SearchFragment());
     }
 
-    public void changeFragment(Fragment fragment) {
+    public void changeFragment(ActualFragment actualFragment, Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, fragment).commit();
-        if (fragment.getClass() == SearchFragment.class) {
-            setTitle("Найти тест");
-            upperNavigationView.setCheckedItem(R.id.search_test_item);
-            actualFragment = ActualFragment.SEARCH_FRAGMENT;
-        }
-        else if (fragment.getClass() == CreateFragment.class) {
-            setTitle("Создать тест");
-            upperNavigationView.setCheckedItem(R.id.create_test_item);
-            actualFragment = ActualFragment.CREATE_FRAGMENT;
-        }
-        else {
-            setTitle("Мои тесты");
-            upperNavigationView.setCheckedItem(R.id.my_tests_item);
-            actualFragment = ActualFragment.MY_TESTS_FRAGMENT;
+        this.actualFragment = actualFragment;
+        switch (actualFragment) {
+            case SEARCH_FRAGMENT:
+                setTitle("Найти тест");
+                upperNavigationView.setCheckedItem(R.id.search_test_item);
+                break;
+            case CREATE_FRAGMENT:
+                setTitle("Создать тест");
+                upperNavigationView.setCheckedItem(R.id.create_test_item);
+                break;
+            case MY_TESTS_FRAGMENT:
+                setTitle("Мои тесты");
+                upperNavigationView.setCheckedItem(R.id.my_tests_item);
+                break;
         }
     }
 
@@ -143,55 +146,28 @@ public class BaseActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (onBackPressedListener == null || onBackPressedListener.onBackPressed())
+            super.onBackPressed();
+    }
+
+    @Override
+    public void onTestSaved() {
+        changeFragment(ActualFragment.SEARCH_FRAGMENT, new SearchFragment());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("TestManDebug", "12313");
+        if (resultCode == RESULT_TEST_UPDATED)
+            changeFragment(ActualFragment.SEARCH_FRAGMENT, new SearchFragment());
+    }
 
     private enum ActualFragment {
         SEARCH_FRAGMENT,
         CREATE_FRAGMENT,
         MY_TESTS_FRAGMENT
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == TEST_NOT_STARTED) {
-            new AsyncTask<Void, Void, Void>() {
-                ProgressDialog dialog;
-                @Override
-                protected void onPreExecute() {
-                    super.onPreExecute();
-                    dialog = new ProgressDialog(BaseActivity.this);
-                    dialog.setTitle("Подождите");
-                    dialog.setCancelable(false);
-                    dialog.show();
-                }
-
-                @Override
-                protected Void doInBackground(Void... params) {
-                    FormBody body = new FormBody.Builder()
-                            .add("id", String.valueOf(data.getIntExtra("id", -1)))
-                            .build();
-                    Log.i("InterruptedAnswerId", String.valueOf(data.getIntExtra("id", -89)));
-
-                    Request request = new Request.Builder()
-                            .url("https://testman-o442a4o3.c9users.io/remove_answer/")
-                            .post(body)
-                            .build();
-
-                    try {
-                        String responseString = new OkHttpClient().newCall(request).execute().body().string();
-                        Log.i("AnswerInterrupted", responseString);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-
-                @Override
-                protected void onPostExecute(Void aVoid) {
-                    super.onPostExecute(aVoid);
-                    dialog.dismiss();
-                }
-            }.execute();
-        }
     }
 }

@@ -12,7 +12,8 @@ class TaskClass(val question: String = "",
                 val answers: ArrayList<String> = ArrayList(Arrays.asList("", "")),
                 val type: Int = TaskType.RADIO_BOX.code,
                 val rights: Any = -1,
-                val photoArray: Any = Object()) {
+                val scores: Int = 5,
+                val photo: Any = Object()) {
     fun isEmpty(): Boolean {
         return question.isEmpty()
                 || answers.contains("")

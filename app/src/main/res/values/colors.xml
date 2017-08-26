@@ -10,4 +10,6 @@
     <color name="darkGray">#383838</color>
     <color name="trueColorPrimaryDark">#d56900</color>
     <color name="transparent">#0fff</color>
+    <color name="red">#CE1212</color>
+    <color name="green">#22CF20</color>
 </resources>

@@ -33,4 +33,11 @@
     <string name="get_test_by_id">get_test_by_id</string>
     <string name="begin">Начать</string>
     <string name="finish">Закончить</string>
+    <string name="five">5</string>
+    <string name="add_photo">Добавить изображение</string>
+    <string name="change_input">Изменить ввод</string>
+    <string name="delete">Удалить</string>
+    <string name="scores_for_task">Баллы за задание:</string>
+    <string name="delete_test">Удалить</string>
+    <string name="change_test">Изменить</string>
 </resources>

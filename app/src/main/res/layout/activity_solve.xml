@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/solve_frame_layout"
+<LinearLayout
+    android:id="@+id/solve_frame_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -44,7 +45,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/finish"
-                    android:textSize="16sp"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
                     android:layout_marginStart="16dp"
                     style="@style/save_button_style" />
 
@@ -76,7 +78,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:textSize="50sp"/>
+                    android:textSize="50sp"
+                    android:textStyle="bold"
+                    android:maxLines="3"
+                    android:gravity="center"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp" />
 
             </FrameLayout>
 
@@ -90,6 +97,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="36sp"
+                    android:textStyle="bold"
                     android:textColor="@color/white"
                     android:layout_margin="8dp"/>
 
@@ -106,6 +114,7 @@
                     android:layout_height="wrap_content"
                     style="@style/solve_button_style"
                     android:text="@string/begin"
+                    android:textStyle="bold"
                     android:textColor="@color/colorPrimary"
                     android:textSize="30sp"
                     android:layout_marginTop="20dp"/>

@@ -2,11 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.android.petro.testman.Fragments.MyTestsFragment">
+    tools:context="com.android.petro.testman.Fragments.MyTestsControlFragment">
 
-    <TextView
+    <FrameLayout
+        android:id="@+id/frame_layout__my_tests"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent" />
 
 </FrameLayout>

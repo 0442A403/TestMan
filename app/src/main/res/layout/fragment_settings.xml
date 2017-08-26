@@ -21,6 +21,7 @@
                 app:layout_marginEndPercent="7.5%"
                 android:layout_marginTop="16dp"
                 android:hint="@string/fill_name"
+                android:textStyle="bold"
                 android:textSize="20sp"
                 android:inputType="textCapSentences"/>
 
@@ -32,6 +33,7 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/mark_begins"
                 android:textSize="20sp"
+                android:textStyle="bold"
                 android:layout_below="@id/test_name__creating"/>
 
             <android.support.percent.PercentRelativeLayout
@@ -57,6 +59,7 @@
                     android:layout_marginEnd="2dp"
                     android:layout_toStartOf="@id/seekbar__five"
                     android:text="@string/seekbar_note__five"
+                    android:textStyle="bold"
                     android:textSize="22sp"
                     android:layout_centerVertical="true" />
 
@@ -69,6 +72,7 @@
                 android:layout_below="@id/seekbar_wrapper__five"
                 android:layout_centerHorizontal="true"
                 android:text="@string/default_seekbar_value__five"
+                android:textStyle="bold"
                 android:textSize="16sp" />
 
             <android.support.percent.PercentRelativeLayout
@@ -94,6 +98,7 @@
                     android:layout_marginEnd="2dp"
                     android:layout_toStartOf="@id/seekbar__four"
                     android:text="@string/seekbar_note__four"
+                    android:textStyle="bold"
                     android:textSize="22sp"
                     android:layout_centerVertical="true" />
 
@@ -106,6 +111,7 @@
                 android:layout_below="@id/seekbar_wrapper__four"
                 android:layout_centerHorizontal="true"
                 android:text="@string/default_seekbar_value__four"
+                android:textStyle="bold"
                 android:textSize="16sp" />
 
             <android.support.percent.PercentRelativeLayout
@@ -131,6 +137,7 @@
                     android:layout_marginEnd="2dp"
                     android:layout_toStartOf="@id/seekbar__three"
                     android:text="@string/seekbar_note__three"
+                    android:textStyle="bold"
                     android:textSize="22sp"
                     android:layout_centerVertical="true" />
 
@@ -143,6 +150,7 @@
                 android:layout_below="@id/seekbar_wrapper__three"
                 android:layout_centerHorizontal="true"
                 android:text="@string/default_seekbar_value__three"
+                android:textStyle="bold"
                 android:textSize="16sp" />
 
             <android.support.v7.widget.AppCompatCheckBox
@@ -151,6 +159,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/seekbar_indicator__three"
                 android:text="@string/show_wrong"
+                android:textStyle="bold"
                 app:layout_marginStartPercent="12.5%"
                 android:layout_marginTop="8dp"
                 android:textSize="20sp"
@@ -163,6 +172,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/show_wrong"
                 android:text="@string/timer"
+                android:textStyle="bold"
                 app:layout_marginStartPercent="12.5%"
                 android:textSize="20sp"
                 android:textColor="@color/defaultGray"
@@ -184,6 +194,7 @@
                     android:layout_width="wrap_content"
                     android:hint="@string/zero_zero"
                     android:maxLength="2"
+                    android:textStyle="bold"
                     android:textSize="26sp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -195,6 +206,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/colon"
+                    android:textStyle="bold"
                     android:textSize="20sp"
                     app:layout_constraintLeft_toRightOf="@+id/timer_minute"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -207,6 +219,7 @@
                     android:hint="@string/zero_zero"
                     android:maxLength="2"
                     android:textSize="26sp"
+                    android:textStyle="bold"
                     app:layout_constraintLeft_toRightOf="@id/colon"
                     app:layout_constraintTop_toTopOf="parent"
                     android:inputType="number"
@@ -221,6 +234,7 @@
                 android:layout_below="@id/timer_wrapper"
                 android:textColor="@color/white"
                 android:text="@string/save"
+                android:textStyle="bold"
                 android:textSize="16sp"
                 android:layout_marginTop="8dp"
                 app:layout_marginStartPercent="12.5%"

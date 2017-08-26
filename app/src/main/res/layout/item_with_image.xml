@@ -30,26 +30,43 @@
     </android.support.v7.widget.CardView>
 
     <TextView
-        android:id="@+id/test_item_name"
+        android:id="@+id/mark__item_with_image"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:textColor="@color/red" />
+
+    <TextView
+        android:id="@+id/first_field__item_with_image"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:ellipsize="end"
         android:textSize="21sp"
+        android:textStyle="bold"
+        android:text="lalala"
+        android:textColor="@color/trueColorPrimaryDark"
         app:layout_constraintLeft_toRightOf="@id/test_item_icon_wrapper"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="15dp" />
 
     <TextView
-        android:id="@+id/test_item_description"
+        android:id="@+id/second_field__item_with_image"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:maxLines="1"
-        app:layout_constraintLeft_toLeftOf="@id/test_item_name"
+        android:text="topola"
+        app:layout_constraintLeft_toLeftOf="@id/first_field__item_with_image"
         android:layout_marginStart="4dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/test_item_name"
+        app:layout_constraintTop_toBottomOf="@id/first_field__item_with_image"
         android:textSize="18sp"
         android:ellipsize="end" />
 

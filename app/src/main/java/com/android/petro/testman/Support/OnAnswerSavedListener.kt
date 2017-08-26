@@ -5,6 +5,6 @@ package com.android.petro.testman.Support
  * Callback for answer saving
  */
 
-interface OnAnswerSave {
-    fun onAnswerSaved()
+interface OnAnswerSavedListener {
+    fun onAnswerSaved(answer: Answer, mark: Int)
 }
