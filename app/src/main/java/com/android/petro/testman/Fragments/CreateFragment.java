@@ -7,18 +7,22 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.petro.testman.R;
-import com.android.petro.testman.Support.OnTestSaveListener;
-import com.android.petro.testman.Support.OnTestSavedListener;
-import com.android.petro.testman.Support.OnTestUpdateListener;
-import com.android.petro.testman.Support.OnTestUpdatedListener;
-import com.android.petro.testman.Support.SettingsData;
-import com.android.petro.testman.Support.TaskData;
-import com.android.petro.testman.Support.Test;
+import com.android.petro.testman.Support.Listeners.OnTestSaveListener;
+import com.android.petro.testman.Support.Listeners.OnTestSavedListener;
+import com.android.petro.testman.Support.Listeners.OnTestUpdateListener;
+import com.android.petro.testman.Support.Listeners.OnTestUpdatedListener;
+import com.android.petro.testman.Support.TestData.SettingsData;
+import com.android.petro.testman.Support.TestData.TaskClass;
+import com.android.petro.testman.Support.TestData.TaskData;
+import com.android.petro.testman.Support.TestData.TaskType;
+import com.android.petro.testman.Support.TestData.Test;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +41,7 @@ public class CreateFragment extends Fragment implements OnTestSaveListener, OnTe
     private Test test = null;
     private View view = null;
     private int id = -1;
+    private TaskData oldData;
 
     public CreateFragment(FragmentManager fragmentManager, OnTestSavedListener onTestSavedListener) {
         this.fragmentManager = fragmentManager;
@@ -51,6 +56,7 @@ public class CreateFragment extends Fragment implements OnTestSaveListener, OnTe
         this.onTestUpdatedListener = onTestUpdatedListener;
         this.test = test;
         this.id = id;
+        this.oldData = test.getTasks();
     }
 
     @Override
@@ -112,6 +118,41 @@ public class CreateFragment extends Fragment implements OnTestSaveListener, OnTe
     @Override
     public void onTestUpdated() {
         onTestUpdatedListener.onTestUpdated();
+    }
+
+    @Override
+    public boolean checkTasksHasBeenChanged() {
+        Gson gson = new Gson();
+        Log.d("TestManDebug", gson.toJson(constructorFragment.getData()) + " " + gson.toJson(oldData));
+        ArrayList<TaskClass> oldTasks = oldData.getTasks();
+        ArrayList<TaskClass> newTasks = constructorFragment.getData().getTasks();
+        if (oldTasks.size() == newTasks.size()) {
+            for (int i = 0; i < oldTasks.size(); i++) {
+                TaskClass oldTask = oldTasks.get(i);
+                TaskClass newTask = newTasks.get(i);
+                if (!oldTask.getQuestion().equals(newTask.getQuestion())
+                        || oldTask.getType() != newTask.getType()
+                        || oldTask.getScores() != newTask.getScores()
+                        || !gson.toJson(oldTask.getAnswers()).equals(gson.toJson(newTask.getAnswers())))
+                    return true;
+                if (oldTask.getType() == TaskType.RADIO_BOX.getCode()
+                        && ((int) newTask.getRights()) != ((int) ((double) oldTask.getRights())))
+                    return true;
+                else {
+                    ArrayList<Object> newRights = (ArrayList<Object>) newTask.getRights();
+                    ArrayList<Object> oldRights = (ArrayList<Object>) oldTask.getRights();
+                    if (newRights.size() != oldRights.size())
+                        return true;
+                    for (int j = 0; j < newRights.size(); j++)
+                        if (((Integer) newRights.get(j)) != ((Double) oldRights.get(j)).intValue())
+                            return true;
+                }
+            }
+        }
+        else {
+            return true;
+        }
+        return false;
     }
 
     private class Adapter extends FragmentStatePagerAdapter {

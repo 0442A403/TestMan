@@ -4,7 +4,11 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.android.petro.testman.Fragments.CreateFragment
 import com.android.petro.testman.R
-import com.android.petro.testman.Support.*
+import com.android.petro.testman.Support.Listeners.OnTestReceivedListener
+import com.android.petro.testman.Support.Listeners.OnTestSavedListener
+import com.android.petro.testman.Support.Listeners.OnTestUpdatedListener
+import com.android.petro.testman.Support.TestData.Answer
+import com.android.petro.testman.Support.TestData.Test
 import kotlinx.android.synthetic.main.activity_changing.*
 
 class ChangingActivity:

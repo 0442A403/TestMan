@@ -17,7 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.petro.testman.Activities.ResultActivity
 import com.android.petro.testman.R
-import com.android.petro.testman.Support.Dictionary
+import com.android.petro.testman.Support.Other.Dictionary
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.vk.sdk.api.*
@@ -128,7 +128,10 @@ class MyAnswersFragment: Fragment() {
                 val jsonArray = JSONArray(responseString)
                 val data = ArrayList<AnswerItem>()
                 val gson = Gson()
-                (0 until jsonArray.length()).mapTo(data) { gson.fromJson(jsonArray.getJSONObject(it).toString(), AnswerItem::class.java) }
+                (0 until jsonArray.length())
+                        .mapTo(data) {
+                            gson.fromJson(jsonArray.getJSONObject(it).toString(), AnswerItem::class.java)
+                        }
                 val usersList = ArrayList<Int>()
                 data
                         .filterNot { usersList.contains(it.test_author) }

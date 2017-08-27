@@ -1,4 +1,4 @@
-package com.android.petro.testman.Support
+package com.android.petro.testman.Support.TestData
 
 import java.util.*
 import kotlin.collections.ArrayList

@@ -14,9 +14,9 @@ import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.TextView
 import com.android.petro.testman.R
-import com.android.petro.testman.Support.TaskClass
-import com.android.petro.testman.Support.TaskData
-import com.android.petro.testman.Support.TaskType
+import com.android.petro.testman.Support.TestData.TaskClass
+import com.android.petro.testman.Support.TestData.TaskData
+import com.android.petro.testman.Support.TestData.TaskType
 import kotlinx.android.synthetic.main.creating_answer_pattern.view.*
 import kotlinx.android.synthetic.main.creating_task_pattern.view.*
 import kotlinx.android.synthetic.main.task_settings_layout.view.*
@@ -32,8 +32,7 @@ class TaskConstructorFragment() : Fragment() {
                 correctRights = task.rights.toInt()
             else {
                 val rightArray = ArrayList<Int>()
-                for (right in task.rights as ArrayList<Double>)
-                    rightArray.add(right.toInt())
+                (task.rights as ArrayList<*>).mapTo(rightArray) { (it as Double).toInt() }
                 correctRights = rightArray
             }
             tasks.add(TaskClass(task.question,

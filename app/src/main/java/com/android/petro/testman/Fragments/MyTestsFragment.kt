@@ -13,9 +13,9 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import com.android.petro.testman.R
-import com.android.petro.testman.Support.OnTestDeletedListener
-import com.android.petro.testman.Support.OnTestSelectedListener
-import com.android.petro.testman.Support.TestItem
+import com.android.petro.testman.Support.Listeners.OnTestDeletedListener
+import com.android.petro.testman.Support.Listeners.OnTestSelectedListener
+import com.android.petro.testman.Support.Other.TestItem
 import kotlinx.android.synthetic.main.fragment_search.view.*
 import kotlinx.android.synthetic.main.my_test_item.view.*
 import java.text.SimpleDateFormat
@@ -99,10 +99,6 @@ class MyTestsFragment(private val callback: OnTestSelectedListener,
                 TestHolder(LayoutInflater.from(parent!!.context).inflate(R.layout.my_test_item, parent, false))
 
         override fun getItemCount(): Int = relevantData.size
-    }
-
-    override fun onDetach() {
-        super.onDetach()
     }
 
     private class TestHolder(val view: View): RecyclerView.ViewHolder(view) {

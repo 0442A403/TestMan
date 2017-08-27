@@ -17,7 +17,9 @@ import android.view.*
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.android.petro.testman.R
-import com.android.petro.testman.Support.*
+import com.android.petro.testman.Support.Listeners.OnAnswerSavedListener
+import com.android.petro.testman.Support.Listeners.OnTestReceivedListener
+import com.android.petro.testman.Support.TestData.*
 import com.google.gson.Gson
 import com.transitionseverywhere.*
 import com.transitionseverywhere.extra.Scale

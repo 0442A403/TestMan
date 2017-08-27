@@ -1,4 +1,6 @@
-package com.android.petro.testman.Support
+package com.android.petro.testman.Support.Listeners
+
+import com.android.petro.testman.Support.TestData.SettingsData
 
 /**
  * Interface that allows transfer signal and information

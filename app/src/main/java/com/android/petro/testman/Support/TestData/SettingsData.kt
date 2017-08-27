@@ -1,4 +1,4 @@
-package com.android.petro.testman.Support
+package com.android.petro.testman.Support.TestData
 
 /**
  * Support class for transferring general information throw callback

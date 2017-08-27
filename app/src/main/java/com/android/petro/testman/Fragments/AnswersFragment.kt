@@ -19,10 +19,10 @@ import android.widget.TextView
 import com.android.petro.testman.Activities.ChangingActivity
 import com.android.petro.testman.Activities.ResultActivity
 import com.android.petro.testman.R
-import com.android.petro.testman.Support.AnswerItem
-import com.android.petro.testman.Support.Dictionary
-import com.android.petro.testman.Support.OnTestDeletedListener
-import com.android.petro.testman.Support.Test
+import com.android.petro.testman.Support.Listeners.OnTestDeletedListener
+import com.android.petro.testman.Support.Other.AnswerItem
+import com.android.petro.testman.Support.Other.Dictionary
+import com.android.petro.testman.Support.TestData.Test
 import com.bumptech.glide.Glide
 import com.vk.sdk.api.VKApiConst
 import com.vk.sdk.api.VKParameters

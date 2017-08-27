@@ -18,8 +18,8 @@ import android.view.ViewGroup
 import android.widget.EditText
 import com.android.petro.testman.Activities.SolveActivity
 import com.android.petro.testman.R
-import com.android.petro.testman.Support.Dictionary
-import com.android.petro.testman.Support.OnUpdatedDataListener
+import com.android.petro.testman.Support.Listeners.OnUpdatedDataListener
+import com.android.petro.testman.Support.Other.Dictionary
 import com.bumptech.glide.Glide
 import com.vk.sdk.api.*
 import com.vk.sdk.api.methods.VKApiUsers

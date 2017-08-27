@@ -1,9 +1,11 @@
-package com.android.petro.testman.Support
+package com.android.petro.testman.Support.TestData
 
 import android.app.ProgressDialog
 import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
+import com.android.petro.testman.Support.Listeners.OnAnswerReceivedListener
+import com.android.petro.testman.Support.Listeners.OnAnswerSavedListener
 import com.google.gson.Gson
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
@@ -38,8 +40,8 @@ class Answer(private val id: Int,
                     allScores += tasks[i].scores
                 } else if (tasks[i].type == TaskType.CHECK_BOX.code) {
                     allScores += tasks[i].scores
-                    val rightList = tasks[i].rights as ArrayList<Double>
-                    val list = answer[i] as ArrayList<Int>
+                    val rightList = tasks[i].rights as ArrayList<*>
+                    val list = answer[i] as ArrayList<*>
                     var wrongs = 0
                     if (Math.abs(rightList.size - list.size) > 1)
                         break
@@ -47,7 +49,7 @@ class Answer(private val id: Int,
                         wrongs = 1
                     Log.i("TestManInformation", "List: ${Arrays.asList(list)}, rightList: ${Arrays.asList(rightList)}, lolol: ${rightList[0]}")
                     for (j in 0 until rightList.size) {
-                        if (!list.contains(rightList[j].toInt())) {
+                        if (!list.contains((rightList[j] as Double).toInt())) {
                             Log.d("TestManDebug", "Answer 1")
                             wrongs++
                             if (wrongs == 2)
@@ -87,7 +89,7 @@ class Answer(private val id: Int,
                             .add("mark", mark.toString())
                             .build()
 
-                    Log.d("Answer on test", answer.toString())
+                    Log.i("TestManInformation", "Answer on test: $answer")
 
                     val request = Request.Builder()
                             .url("https://testman-o442a4o3.c9users.io/add_answer/")
@@ -98,7 +100,7 @@ class Answer(private val id: Int,
                 }
                 override fun onPostExecute(result: String?) {
                     super.onPostExecute(result)
-                    Log.v("HttpResponse", result)
+                    Log.v("TestManNetwork", result)
                     dialog.hide()
                     callback.onAnswerSaved(this@Answer, mark)
                 }

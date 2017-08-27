@@ -1,4 +1,4 @@
-package com.android.petro.testman.Support
+package com.android.petro.testman.Support.Other
 
 /**
  * Created by petro on 24.08.2017.
@@ -8,6 +8,7 @@ package com.android.petro.testman.Support
 class Dictionary {
     val dictionary: HashMap<String, String> = HashMap()
     init {
+        dictionary.put("Ilya", "Илья")
         dictionary.put("th", "з")
         dictionary.put("ch", "ч")
         dictionary.put("Th", "З")

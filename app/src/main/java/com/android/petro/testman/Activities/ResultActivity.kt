@@ -14,7 +14,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.android.petro.testman.R
-import com.android.petro.testman.Support.*
+import com.android.petro.testman.Support.Listeners.OnAnswerReceivedListener
+import com.android.petro.testman.Support.Listeners.OnTestReceivedListener
+import com.android.petro.testman.Support.TestData.Answer
+import com.android.petro.testman.Support.TestData.TaskClass
+import com.android.petro.testman.Support.TestData.TaskType
+import com.android.petro.testman.Support.TestData.Test
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_result.*
 import kotlinx.android.synthetic.main.solve_answer_layout.view.*

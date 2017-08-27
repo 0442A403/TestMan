@@ -1,4 +1,4 @@
-package com.android.petro.testman.Support
+package com.android.petro.testman.Support.Other
 
 /**
  * Created by petro on 23.08.2017.

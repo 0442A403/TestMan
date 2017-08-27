@@ -10,7 +10,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.petro.testman.R
-import com.android.petro.testman.Support.*
+import com.android.petro.testman.Support.Listeners.OnBackPressedListener
+import com.android.petro.testman.Support.Listeners.OnDataReceivedListener
+import com.android.petro.testman.Support.Listeners.OnTestDeletedListener
+import com.android.petro.testman.Support.Listeners.OnTestSelectedListener
+import com.android.petro.testman.Support.Other.AnswerItem
+import com.android.petro.testman.Support.Other.TestItem
 import com.google.gson.Gson
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
@@ -27,7 +32,7 @@ class MyTestsControlFragment:
         OnTestSelectedListener,
         OnDataReceivedListener,
         OnBackPressedListener,
-        OnTestDeletedListener{
+        OnTestDeletedListener {
 
     private val testFragment: MyTestsFragment = MyTestsFragment(this, this)
     private var mActualWindow: MActualWindow? = null

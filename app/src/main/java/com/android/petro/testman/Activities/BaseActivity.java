@@ -20,8 +20,8 @@ import com.android.petro.testman.Fragments.MyAnswersFragment;
 import com.android.petro.testman.Fragments.MyTestsControlFragment;
 import com.android.petro.testman.Fragments.SearchFragment;
 import com.android.petro.testman.R;
-import com.android.petro.testman.Support.OnBackPressedListener;
-import com.android.petro.testman.Support.OnTestSavedListener;
+import com.android.petro.testman.Support.Listeners.OnBackPressedListener;
+import com.android.petro.testman.Support.Listeners.OnTestSavedListener;
 import com.vk.sdk.VKSdk;
 
 /**

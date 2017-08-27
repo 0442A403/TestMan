@@ -1,4 +1,4 @@
-package com.android.petro.testman.Support
+package com.android.petro.testman.Support.Listeners
 
 /**
  * Created by petro on 25.08.2017.
