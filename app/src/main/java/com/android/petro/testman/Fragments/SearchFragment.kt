@@ -122,11 +122,12 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
                     .load(users[relevantTestData[position].authorId]!!.photo)
                     .into(holder.testIcon)
             holder.view.setOnClickListener {
-                activity.startActivity(
+                activity.startActivityForResult(
                         Intent(activity, SolveActivity::class.java)
                                 .putExtra("id", relevantTestData.get(position).testId)
                                 .putExtra("time", relevantTestData.get(position).time)
-                                .putExtra("name", relevantTestData.get(position).name))
+                                .putExtra("name", relevantTestData.get(position).name),
+                        0)
                 Log.v("TestId", relevantTestData[position].testId.toString())
             }
         }
@@ -202,7 +203,7 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
                                 .get()
                                 .build())
                         .execute().body().string()
-                Log.v("ServerResponse", str)
+                Log.v("TestManNetwork", str)
                 try {
                     tests = JSONArray(str)
                 } catch (e: JSONException) {

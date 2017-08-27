@@ -41,6 +41,14 @@ class Test constructor(val settings: SettingsData,
             }
 
             override fun doInBackground(vararg params: Void?): Void? {
+                context.getSharedPreferences("AppPref", Context.MODE_PRIVATE).edit()
+                        .putInt("Five begins", settings.fivebegins)
+                        .putInt("Four begins", settings.fourbegins)
+                        .putInt("Three begins", settings.threebegins)
+                        .putInt("Time", settings.time)
+                        .putBoolean("Show wrongs", settings.showwrongs == "t")
+                        .apply()
+
                 val list: ArrayList<String> = ArrayList()
                 for (task in tasks.tasks) {
                     val obj: String? = Gson().toJson(task)
@@ -89,10 +97,9 @@ class Test constructor(val settings: SettingsData,
 
             override fun doInBackground(vararg params: Void?): Void? {
                 val list: ArrayList<String> = ArrayList()
-                for (task in tasks.tasks) {
-                    val obj: String? = Gson().toJson(task)
-                    list.add(obj!!)
-                }
+                tasks.tasks
+                        .map { Gson().toJson(it) }
+                        .mapTo(list) { it!! }
                 val formBody = FormBody.Builder()
                         .add("id", testId.toString())
                         .add("name", settings.name)

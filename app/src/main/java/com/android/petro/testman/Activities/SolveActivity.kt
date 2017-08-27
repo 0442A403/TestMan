@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.animation.LinearOutSlowInInterpolator
 import android.support.v7.app.AppCompatActivity
@@ -120,10 +119,9 @@ class SolveActivity : AppCompatActivity(), OnAnswerSavedListener, OnTestReceived
                             .putExtra("Title",
                                     "Результат: $mark")
             )
-        else
-            Snackbar
-                    .make(solve_frame_layout, "Ваша оценка: $mark", Snackbar.LENGTH_LONG)
-                    .show()
+        else {
+            setResult(BaseActivity.RESULT_MARK, Intent().putExtra("Mark", mark))
+        }
         finish()
     }
 
@@ -154,7 +152,7 @@ class SolveActivity : AppCompatActivity(), OnAnswerSavedListener, OnTestReceived
     private fun finishTest() {
         Log.i("TestManInformation", "FinishingTest")
         timer?.cancel()
-        getAnswer().sendData(this, this, test!!)
+        getAnswer().save(this, this, test!!)
     }
 
     private fun getAnswer(): Answer {

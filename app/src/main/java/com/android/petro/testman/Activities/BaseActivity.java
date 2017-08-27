@@ -5,17 +5,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 
 import com.android.petro.testman.Fragments.CreateFragment;
+import com.android.petro.testman.Fragments.MyAnswersFragment;
 import com.android.petro.testman.Fragments.MyTestsControlFragment;
 import com.android.petro.testman.Fragments.SearchFragment;
 import com.android.petro.testman.R;
@@ -37,6 +38,7 @@ public class BaseActivity extends AppCompatActivity implements OnTestSavedListen
     private OnBackPressedListener onBackPressedListener;
     private final OnTestSavedListener onTestSavedListener = this;
     public static final int RESULT_TEST_UPDATED = -22;
+    public static final int RESULT_MARK = -23;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,40 +70,15 @@ public class BaseActivity extends AppCompatActivity implements OnTestSavedListen
                                     .setPositiveButton("Выйти", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            changeFragment(
-                                                    item.getItemId() == R.id.search_test_item?
-                                                            ActualFragment.SEARCH_FRAGMENT
-                                                    : ActualFragment.MY_TESTS_FRAGMENT,
-                                                    item.getItemId() == R.id.search_test_item?
-                                                            new SearchFragment()
-                                                            : new MyTestsControlFragment());
-                                            drawerLayout.closeDrawer(Gravity.START);
+                                            if (item.getItemId() != R.id.create_test_item)
+                                                changeFragmentById(item.getItemId());
                                         }
                                     })
                                     .setNegativeButton("Отмена", null)
                                     .show();
                             return false;
                         }
-                        switch (item.getItemId()) {
-                            case R.id.search_test_item:
-                                SearchFragment sFragment = new SearchFragment();
-                                onBackPressedListener = null;
-                                changeFragment(ActualFragment.SEARCH_FRAGMENT, sFragment);
-                                drawerLayout.closeDrawer(Gravity.START);
-                                break;
-                            case R.id.create_test_item:
-                                CreateFragment cFragment = new CreateFragment(getSupportFragmentManager(), onTestSavedListener);
-                                onBackPressedListener = null;
-                                changeFragment(ActualFragment.CREATE_FRAGMENT, cFragment);
-                                drawerLayout.closeDrawer(Gravity.START);
-                                break;
-                            case R.id.my_tests_item:
-                                MyTestsControlFragment mtcFragment = new MyTestsControlFragment();
-                                onBackPressedListener = mtcFragment;
-                                changeFragment(ActualFragment.MY_TESTS_FRAGMENT, mtcFragment);
-                                drawerLayout.closeDrawer(Gravity.START);
-                                break;
-                        }
+                        changeFragmentById(item.getItemId());
                         return true;
                     }
                 });
@@ -120,7 +97,33 @@ public class BaseActivity extends AppCompatActivity implements OnTestSavedListen
         changeFragment(ActualFragment.SEARCH_FRAGMENT, new SearchFragment());
     }
 
+    private void changeFragmentById(int itemId) {
+        switch (itemId) {
+            case R.id.search_test_item:
+                SearchFragment sFragment = new SearchFragment();
+                onBackPressedListener = null;
+                changeFragment(ActualFragment.SEARCH_FRAGMENT, sFragment);
+                break;
+            case R.id.create_test_item:
+                CreateFragment cFragment = new CreateFragment(getSupportFragmentManager(), onTestSavedListener);
+                onBackPressedListener = null;
+                changeFragment(ActualFragment.CREATE_FRAGMENT, cFragment);
+                break;
+            case R.id.my_answers_item:
+                MyAnswersFragment maFragment = new MyAnswersFragment();
+                onBackPressedListener = null;
+                changeFragment(ActualFragment.MY_ANSWERS_FRAGMENT, maFragment);
+                break;
+            case R.id.my_tests_item:
+                MyTestsControlFragment mtcFragment = new MyTestsControlFragment();
+                onBackPressedListener = mtcFragment;
+                changeFragment(ActualFragment.MY_TESTS_FRAGMENT, mtcFragment);
+                break;
+        }
+    }
+
     public void changeFragment(ActualFragment actualFragment, Fragment fragment) {
+        drawerLayout.closeDrawer(Gravity.START);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, fragment).commit();
         this.actualFragment = actualFragment;
@@ -132,6 +135,10 @@ public class BaseActivity extends AppCompatActivity implements OnTestSavedListen
             case CREATE_FRAGMENT:
                 setTitle("Создать тест");
                 upperNavigationView.setCheckedItem(R.id.create_test_item);
+                break;
+            case MY_ANSWERS_FRAGMENT:
+                setTitle("Мои ответы");
+                upperNavigationView.setCheckedItem(R.id.my_answers_item);
                 break;
             case MY_TESTS_FRAGMENT:
                 setTitle("Мои тесты");
@@ -160,14 +167,22 @@ public class BaseActivity extends AppCompatActivity implements OnTestSavedListen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("TestManDebug", "12313");
         if (resultCode == RESULT_TEST_UPDATED)
             changeFragment(ActualFragment.SEARCH_FRAGMENT, new SearchFragment());
+        else if (resultCode == RESULT_MARK)
+            Snackbar
+                    .make(
+                            findViewById(R.id.layout__activity_base),
+                            "Ваша оценка: " + data.getIntExtra("Mark", -1),
+                            Snackbar.LENGTH_LONG
+                    )
+                    .show();
     }
 
     private enum ActualFragment {
         SEARCH_FRAGMENT,
         CREATE_FRAGMENT,
+        MY_ANSWERS_FRAGMENT,
         MY_TESTS_FRAGMENT
     }
 }

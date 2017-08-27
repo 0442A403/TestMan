@@ -8,6 +8,9 @@
             android:id="@+id/create_test_item"
             android:title="@string/create_test" />
         <item
+            android:id="@+id/my_answers_item"
+            android:title="@string/my_answers" />
+        <item
             android:id="@+id/my_tests_item"
             android:title="@string/my_tests" />
     </group>

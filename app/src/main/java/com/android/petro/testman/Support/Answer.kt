@@ -25,7 +25,7 @@ class Answer(private val id: Int,
              var date: Int = -1,
              var author: Int = -1) {
 
-    fun sendData(context : Context, callback: OnAnswerSavedListener, test: Test) {
+    fun save(context : Context, callback: OnAnswerSavedListener, test: Test) {
         try {
             val dialog = ProgressDialog(context)
             var earnedScores = 0.0f

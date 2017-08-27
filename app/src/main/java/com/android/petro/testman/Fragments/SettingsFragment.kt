@@ -49,6 +49,7 @@ class SettingsFragment(private val onTestSaveListener: OnTestSaveListener,
         val fiveIndicator = layout.seekbar_indicator__five
         val fourIndicator = layout.seekbar_indicator__four
         val threeIndicator = layout.seekbar_indicator__three
+        val preferences = context.getSharedPreferences("AppPref", Context.MODE_PRIVATE)
 
         five.onProgressChanged {
             progress, _ ->
@@ -58,6 +59,7 @@ class SettingsFragment(private val onTestSaveListener: OnTestSaveListener,
                 four.progress = progress - 1
             fiveIndicator.text = "${five.progress}%"
         }
+        five.progress = preferences.getInt("Five begins", 75)
         four.onProgressChanged {
             progress, _ ->
             if (progress == 100)
@@ -70,6 +72,7 @@ class SettingsFragment(private val onTestSaveListener: OnTestSaveListener,
                 five.progress = progress + 1
             fourIndicator.text = "${four.progress}%"
         }
+        four.progress = preferences.getInt("Four begins", 50)
         three.onProgressChanged {
             progress, _ ->
             if (progress > 98)
@@ -80,6 +83,7 @@ class SettingsFragment(private val onTestSaveListener: OnTestSaveListener,
                 four.progress = progress + 1
             threeIndicator.text = "${three.progress}%"
         }
+        three.progress = preferences.getInt("Three begins", 25)
 
         val timerCheckBox = layout.timer_checkbox
         val timerWrapper: View = layout.timer_wrapper
@@ -117,6 +121,13 @@ class SettingsFragment(private val onTestSaveListener: OnTestSaveListener,
                         dialogBox(getTime() < 300 && layout.timer_checkbox.isChecked)
                 }
             }
+        }
+
+        val time = preferences.getInt("Time", 0)
+        if (time > 0) {
+            timerCheckBox.isChecked = true
+            minute.setText((time / 60).toString())
+            second.setText((time % 60).toString())
         }
 
         if (settings != null) {

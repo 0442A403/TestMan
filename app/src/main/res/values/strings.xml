@@ -40,4 +40,5 @@
     <string name="scores_for_task">Баллы за задание:</string>
     <string name="delete_test">Удалить</string>
     <string name="change_test">Изменить</string>
+    <string name="my_answers">Мои ответы</string>
 </resources>

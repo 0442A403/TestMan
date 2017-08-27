@@ -2,6 +2,7 @@ package com.android.petro.testman.Support
 
 /**
  * Created by petro on 24.08.2017.
+ * Simple dictionary for translating vk's names from english to russian
  */
 
 class Dictionary {

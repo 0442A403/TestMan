@@ -69,8 +69,6 @@ class AnswersFragment(private val data: ArrayList<AnswerItem>,
                     override fun onComplete(response: VKResponse) {
                         super.onComplete(response)
                         val vkUsers = response.parsedModel as VKList<*>
-                        Log.i("TestManInformation", "Length: ${vkUsers.size}")
-                        Log.i("TestManInformation", "L: ${data.size}")
                         object: AsyncTask<Void, Void, HashMap<Int, User>>() {
                             override fun doInBackground(vararg params: Void?): HashMap<Int, User> {
                                 for (user in vkUsers) {
