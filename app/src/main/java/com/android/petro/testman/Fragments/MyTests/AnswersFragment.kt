@@ -1,4 +1,4 @@
-package com.android.petro.testman.Fragments
+package com.android.petro.testman.Fragments.MyTests
 
 import android.content.Context
 import android.content.Intent

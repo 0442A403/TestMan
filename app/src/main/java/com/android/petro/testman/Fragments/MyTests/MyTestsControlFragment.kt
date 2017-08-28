@@ -1,4 +1,4 @@
-package com.android.petro.testman.Fragments
+package com.android.petro.testman.Fragments.MyTests
 
 import android.app.ProgressDialog
 import android.content.Context

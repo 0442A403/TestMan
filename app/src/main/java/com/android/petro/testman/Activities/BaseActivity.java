@@ -15,10 +15,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 
-import com.android.petro.testman.Fragments.CreateFragment;
-import com.android.petro.testman.Fragments.MyAnswersFragment;
-import com.android.petro.testman.Fragments.MyTestsControlFragment;
-import com.android.petro.testman.Fragments.SearchFragment;
+import com.android.petro.testman.Fragments.Create.CreateFragment;
+import com.android.petro.testman.Fragments.MyAnswers.MyAnswersFragment;
+import com.android.petro.testman.Fragments.MyTests.MyTestsControlFragment;
+import com.android.petro.testman.Fragments.Search.SearchFragment;
 import com.android.petro.testman.R;
 import com.android.petro.testman.Support.Listeners.OnBackPressedListener;
 import com.android.petro.testman.Support.Listeners.OnTestSavedListener;

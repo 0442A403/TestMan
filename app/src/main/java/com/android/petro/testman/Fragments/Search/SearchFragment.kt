@@ -1,4 +1,4 @@
-package com.android.petro.testman.Fragments
+package com.android.petro.testman.Fragments.Search
 
 import android.app.Activity
 import android.app.ProgressDialog

@@ -1,4 +1,4 @@
-package com.android.petro.testman.Fragments
+package com.android.petro.testman.Fragments.Create
 
 import android.app.Dialog
 import android.content.Context
@@ -358,7 +358,7 @@ class TaskConstructorFragment() : Fragment() {
 
 
     private class TaskAdapter(val floatButton : FloatingActionButton,
-                              val context: Context) : RecyclerView.Adapter<TaskHolder>(), removeTaskCallback{
+                              val context: Context) : RecyclerView.Adapter<TaskHolder>(), removeTaskCallback {
         private var size = 1
         private val taskHolders = ArrayList<TaskHolder>()
         private var data = TaskData()

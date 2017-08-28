@@ -1,4 +1,4 @@
-package com.android.petro.testman.Fragments
+package com.android.petro.testman.Fragments.MyAnswers
 
 import android.app.Activity
 import android.app.ProgressDialog
@@ -177,7 +177,7 @@ class MyAnswersFragment: Fragment() {
                                                                             .asBitmap()
                                                                             .into(-1, -1)
                                                                             .get()
-                                                                    ))
+                                                            ))
                                                 return null
                                             }
 

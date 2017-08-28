@@ -2,7 +2,7 @@ package com.android.petro.testman.Activities
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.android.petro.testman.Fragments.CreateFragment
+import com.android.petro.testman.Fragments.Create.CreateFragment
 import com.android.petro.testman.R
 import com.android.petro.testman.Support.Listeners.OnTestReceivedListener
 import com.android.petro.testman.Support.Listeners.OnTestSavedListener

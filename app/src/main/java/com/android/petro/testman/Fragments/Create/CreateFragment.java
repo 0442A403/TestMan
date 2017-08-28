@@ -1,4 +1,4 @@
-package com.android.petro.testman.Fragments;
+package com.android.petro.testman.Fragments.Create;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
