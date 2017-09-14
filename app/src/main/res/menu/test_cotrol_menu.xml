@@ -5,5 +5,5 @@
         android:title="@string/change_test"/>
     <item
         android:id="@+id/delete_test__menu"
-        android:title="@string/delete_test"/>
+        android:title="@string/delete"/>
 </menu>

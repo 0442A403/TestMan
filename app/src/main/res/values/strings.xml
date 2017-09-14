@@ -29,7 +29,7 @@
 
     <string name="server_url">http://testman-server.herokuapp.com/</string>
     <string name="add_answer">add_answer/</string>
-    <string name="add_test_url">add_test/</string>
+    <string name="add_test">add_test/</string>
     <string name="get_all_tests">get_all_tests/</string>
     <string name="get_test_by_id">get_test_by_id/</string>
     <string name="get_tests_by_author">get_tests_by_author/</string>
@@ -43,7 +43,8 @@
     <string name="change_input">Изменить ввод</string>
     <string name="delete">Удалить</string>
     <string name="scores_for_task">Баллы за задание:</string>
-    <string name="delete_test">Удалить</string>
     <string name="change_test">Изменить</string>
     <string name="my_answers">Мои ответы</string>
+    <string name="delete_test">delete_test/</string>
+    <string name="update_test">update_test/</string>
 </resources>

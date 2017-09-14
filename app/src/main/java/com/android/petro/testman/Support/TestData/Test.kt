@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
+import com.android.petro.testman.R
 import com.android.petro.testman.Support.Listeners.OnTestDeletedListener
 import com.android.petro.testman.Support.Listeners.OnTestReceivedListener
 import com.android.petro.testman.Support.Listeners.OnTestSavedListener
@@ -23,16 +24,7 @@ import org.json.JSONObject
 class Test constructor(val settings: SettingsData,
                        val tasks: TaskData,
                        context: Context) {
-
-    val SERVER_URL = "https://testman-o442a4o3.c9users.io/"
-    val ADD_TEST = "add_test/"
-    val UPDATE_TEST = "update_test/"
-    var author: Int = -1
-
-    init {
-        author = context.getSharedPreferences("AppPref", Context.MODE_PRIVATE).getInt("VKId", -1)
-    }
-
+    var author: Int = context.getSharedPreferences("AppPref", Context.MODE_PRIVATE).getInt("VKId", -1)
     fun save(callBack: OnTestSavedListener, context: Context) {
         val dialog = ProgressDialog(context)
         dialog.setMessage("Сохраняем тест")
@@ -70,7 +62,7 @@ class Test constructor(val settings: SettingsData,
                         .build()
 
                 val request = Request.Builder()
-                        .url(SERVER_URL + ADD_TEST)
+                        .url(context.getString(R.string.server_url) + context.getString(R.string.add_test))
                         .post(formBody)
                         .build()
 
@@ -117,7 +109,7 @@ class Test constructor(val settings: SettingsData,
                         .build()
 
                 val request = Request.Builder()
-                        .url(SERVER_URL + UPDATE_TEST)
+                        .url(context.getString(R.string.server_url) + context.getString(R.string.update_test))
                         .post(formBody)
                         .build()
 
@@ -157,7 +149,7 @@ class Test constructor(val settings: SettingsData,
                             .build()
 
                     val request = Request.Builder()
-                            .url("https://testman-o442a4o3.c9users.io/get_test_by_id/")
+                            .url(context.getString(R.string.server_url) + context.getString(R.string.get_test_by_id))
                             .post(formBody)
                             .build()
 
@@ -201,7 +193,7 @@ class Test constructor(val settings: SettingsData,
                             .build()
 
                     val request = Request.Builder()
-                            .url("https://testman-o442a4o3.c9users.io/get_test_by_id/")
+                            .url(context.getString(R.string.server_url) + context.getString(R.string.get_test_by_id))
                             .post(formBody)
                             .build()
 
@@ -241,7 +233,7 @@ class Test constructor(val settings: SettingsData,
                             .build()
 
                     val request = Request.Builder()
-                            .url("https://testman-o442a4o3.c9users.io/get_test_by_id/")
+                            .url(context.getString(R.string.server_url) + context.getString(R.string.get_test_by_id))
                             .post(formBody)
                             .build()
 
@@ -281,7 +273,7 @@ class Test constructor(val settings: SettingsData,
                             .build()
 
                     val request = Request.Builder()
-                            .url("https://testman-o442a4o3.c9users.io/delete_test/")
+                            .url(context.getString(R.string.server_url) + context.getString(R.string.delete_test))
                             .post(formBody)
                             .build()
 
