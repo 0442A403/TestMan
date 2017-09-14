@@ -117,7 +117,7 @@ class MyAnswersFragment: Fragment() {
                     .build()
 
             val request = Request.Builder()
-                    .url("https://testman-o442a4o3.c9users.io/get_answers_by_author/")
+                    .url(activity.getString(R.string.server_url) + activity.getString(R.string.get_answers_by_author))
                     .post(formBody)
                     .build()
 
@@ -184,6 +184,7 @@ class MyAnswersFragment: Fragment() {
                                             override fun onPostExecute(result: Void?) {
                                                 super.onPostExecute(result)
                                                 dialog.hide()
+                                                data.reverse()
                                                 recyclerView.adapter = AnswerAdapter(data, users, activity)
                                                 recyclerView.adapter.notifyDataSetChanged()
                                             }
@@ -200,10 +201,6 @@ class MyAnswersFragment: Fragment() {
                 e.printStackTrace()
             }
             return null
-        }
-
-        override fun onPostExecute(result: Void?) {
-            super.onPostExecute(result)
         }
     }
 

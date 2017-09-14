@@ -27,10 +27,15 @@
     <string name="fill_name">Введите название</string>
     <string name="testman">TestMan</string>
 
-    <string name="server_url">https://testman-o442a4o3.c9users.io/</string>
+    <string name="server_url">http://testman-server.herokuapp.com/</string>
+    <string name="add_answer">add_answer/</string>
     <string name="add_test_url">add_test/</string>
     <string name="get_all_tests">get_all_tests/</string>
-    <string name="get_test_by_id">get_test_by_id</string>
+    <string name="get_test_by_id">get_test_by_id/</string>
+    <string name="get_tests_by_author">get_tests_by_author/</string>
+    <string name="get_answer_by_id">get_answer_by_id/</string>
+    <string name="get_answers_by_author">get_answers_by_author/</string>
+
     <string name="begin">Начать</string>
     <string name="finish">Закончить</string>
     <string name="five">5</string>

@@ -11,8 +11,5 @@ class TestManApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         VKSdk.initialize(this)
-//        startActivity(
-//                Intent(this, LaunchActivity::class.java)
-//                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP))
     }
 }

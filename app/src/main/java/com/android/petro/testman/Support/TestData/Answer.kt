@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
+import com.android.petro.testman.R
 import com.android.petro.testman.Support.Listeners.OnAnswerReceivedListener
 import com.android.petro.testman.Support.Listeners.OnAnswerSavedListener
 import com.google.gson.Gson
@@ -92,7 +93,7 @@ class Answer(private val id: Int,
                     Log.i("TestManInformation", "Answer on test: $answer")
 
                     val request = Request.Builder()
-                            .url("https://testman-o442a4o3.c9users.io/add_answer/")
+                            .url(context.getString(R.string.server_url) + context.getString(R.string.add_answer))
                             .post(body)
                             .build()
 
@@ -128,7 +129,7 @@ class Answer(private val id: Int,
                             .build()
 
                     val request = Request.Builder()
-                            .url("https://testman-o442a4o3.c9users.io/get_answer_by_id/")
+                            .url(context.getString(R.string.server_url) + context.getString(R.string.get_answer_by_id))
                             .post(formBody)
                             .build()
 

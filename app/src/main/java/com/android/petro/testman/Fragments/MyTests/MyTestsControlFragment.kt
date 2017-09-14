@@ -105,7 +105,7 @@ class MyTestsControlFragment:
                     .build()
 
             val request = Request.Builder()
-                    .url("https://testman-o442a4o3.c9users.io/get_tests_by_author/")
+                    .url(context.getString(R.string.server_url) + context.getString(R.string.get_tests_by_author))
                     .post(formBody)
                     .build()
 
