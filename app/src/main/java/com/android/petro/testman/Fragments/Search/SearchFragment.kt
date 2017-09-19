@@ -19,7 +19,6 @@ import android.widget.EditText
 import com.android.petro.testman.Activities.SolveActivity
 import com.android.petro.testman.R
 import com.android.petro.testman.Support.Listeners.OnUpdatedDataListener
-import com.android.petro.testman.Support.Other.Dictionary
 import com.bumptech.glide.Glide
 import com.vk.sdk.api.*
 import com.vk.sdk.api.methods.VKApiUsers
@@ -157,12 +156,8 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
                                 override fun onComplete(response: VKResponse?) {
                                     Log.v("TestManNetwork", response!!.responseString)
                                     val vkUsers = response.parsedModel as VKList<*>
-                                    val dictionary = Dictionary().dictionary
                                     for (user in vkUsers) {
-                                        var author = user.fields.getString("first_name") + " " + user.fields.getString("last_name")
-                                        for ((key, value) in dictionary)
-                                            if (author.contains(key))
-                                                author = author.replace(key, value, false)
+                                        val author = user.fields.getString("first_name") + " " + user.fields.getString("last_name")
                                         users.put(user.fields.getInt("id"), User(author, user.fields.getString("photo")))
                                     }
                                     notifyDataSetChanged()

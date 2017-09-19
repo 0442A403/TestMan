@@ -21,7 +21,6 @@ import com.android.petro.testman.Activities.ResultActivity
 import com.android.petro.testman.R
 import com.android.petro.testman.Support.Listeners.OnTestDeletedListener
 import com.android.petro.testman.Support.Other.AnswerItem
-import com.android.petro.testman.Support.Other.Dictionary
 import com.android.petro.testman.Support.TestData.Test
 import com.bumptech.glide.Glide
 import com.vk.sdk.api.VKApiConst
@@ -72,11 +71,7 @@ class AnswersFragment(private val data: ArrayList<AnswerItem>,
                         object: AsyncTask<Void, Void, HashMap<Int, User>>() {
                             override fun doInBackground(vararg params: Void?): HashMap<Int, User> {
                                 for (user in vkUsers) {
-                                    var author = user.fields.getString("first_name") + " " + user.fields.getString("last_name")
-                                    val dictionary = Dictionary().dictionary
-                                    for ((key, value) in dictionary)
-                                        if (author.contains(key))
-                                            author = author.replace(key, value, false)
+                                    val author = user.fields.getString("first_name") + " " + user.fields.getString("last_name")
                                     Log.i("TestManInformation", "User photo: ${user.fields.getString("photo")}")
                                     users.put(
                                             user.fields.getInt("id"),
