@@ -24,15 +24,15 @@
                 android:textColor="@color/black"
                 android:layout_marginBottom="18dp" />
 
-            <TextView
-                android:id="@+id/add_photo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/add_photo"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-                android:layout_marginTop="18dp"
-                android:layout_marginBottom="18dp"/>
+            <!--<TextView-->
+                <!--android:id="@+id/add_photo"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/add_photo"-->
+                <!--android:textSize="16sp"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:layout_marginTop="18dp"-->
+                <!--android:layout_marginBottom="18dp"/>-->
 
             <TextView
                 android:id="@+id/delete"

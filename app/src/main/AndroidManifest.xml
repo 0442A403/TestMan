@@ -30,9 +30,11 @@
             android:name=".Activities.BaseActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".Activities.SolveActivity" />
+        <activity android:name=".Activities.SolveActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".Activities.ResultActivity" />
-        <activity android:name=".Activities.ChangingActivity"></activity>
+        <activity android:name=".Activities.ChangingActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

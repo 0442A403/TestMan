@@ -3,6 +3,11 @@
     <item
         android:id="@+id/change_test__menu"
         android:title="@string/change_test"/>
+
+    <item
+        android:id="@+id/clear_answers__menu"
+        android:title="@string/clearAnswers" />
+
     <item
         android:id="@+id/delete_test__menu"
         android:title="@string/delete"/>

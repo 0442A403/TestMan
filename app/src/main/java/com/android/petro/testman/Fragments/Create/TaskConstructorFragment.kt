@@ -86,7 +86,7 @@ class TaskConstructorFragment() : Fragment() {
     }
 
     private class TaskHolder(view: View,
-                             private val removeTaskCallback: removeTaskCallback,
+                             private val removeTaskCallback: RemoveTaskCallback,
                              floatButton: FloatingActionButton,
                              context: Context) :
             RecyclerView.ViewHolder(view),
@@ -115,7 +115,8 @@ class TaskConstructorFragment() : Fragment() {
                 scores++
             }
             dialogView.reduce_scores.setOnClickListener {
-                scores--
+                if (scores > 1)
+                    scores--
             }
             dialogView.change_input.setOnClickListener {
                 changeInput(if (type == TaskType.RADIO_BOX) TaskType.CHECK_BOX else TaskType.RADIO_BOX)
@@ -170,8 +171,8 @@ class TaskConstructorFragment() : Fragment() {
         }
 
         private class AnswerHolder(view: View,
-                                   private val removeAnswerCallback: removeAnswerCallback,
-                                   onCheckChangedCallback: checkChangedCallback) :
+                                   private val removeAnswerCallback: RemoveAnswerCallback,
+                                   onCheckChangedCallback: CheckChangedCallback) :
                 RecyclerView.ViewHolder(view) {
             private val checkBox : CheckBox
             private val radioButton : RadioButton
@@ -236,8 +237,8 @@ class TaskConstructorFragment() : Fragment() {
 
         private class AnswerAdapter(val floatButton: FloatingActionButton) :
                 RecyclerView.Adapter<AnswerHolder>(),
-                removeAnswerCallback,
-                checkChangedCallback {
+                RemoveAnswerCallback,
+                CheckChangedCallback {
             private var size = 2
             private val answerHolders = ArrayList<AnswerHolder>()
             private var data = ArrayList<String>()
@@ -282,7 +283,7 @@ class TaskConstructorFragment() : Fragment() {
             fun setData(answers: ArrayList<String>, taskType : Int, taskRights: Any) {
                 data = answers
                 changeInput(TaskType.getTypeByCode(taskType))
-                Log.d("TestManDebug", "s: $taskType")
+//                Log.d("TestManDebug", "s: $taskType")
                 rights = taskRights
                 size = answers.size
                 notifyDataSetChanged()
@@ -290,16 +291,15 @@ class TaskConstructorFragment() : Fragment() {
 
             fun getRights(type : TaskType): Any {
                 if (type == TaskType.RADIO_BOX) {
-                    for (i in 0 until answerHolders.size)
-                        if (answerHolders[i].isChecked(type))
-                            return i
-                    return -1
+                    return (0 until answerHolders.size).firstOrNull { answerHolders[it].isChecked(type) }
+                            ?: -1
                 }
                 else {
                     val rights = ArrayList<Int>()
-                    for (i in 0 until answerHolders.size)
-                        if (answerHolders[i].isChecked(type))
-                            rights.add(i)
+                    (0 until answerHolders.size)
+                            .filterTo(rights) {
+                                answerHolders[it].isChecked(type)
+                            }
                     return rights
                 }
             }
@@ -323,9 +323,9 @@ class TaskConstructorFragment() : Fragment() {
             }
 
             override fun onCheckChanged(summonHolder: AnswerHolder) {
-                for (holder in answerHolders)
-                    if (holder != summonHolder)
-                        holder.removeChecked()
+                answerHolders
+                        .filter { it != summonHolder }
+                        .forEach { it.removeChecked() }
             }
         }
 
@@ -348,17 +348,17 @@ class TaskConstructorFragment() : Fragment() {
             }
         }
 
-        private interface removeAnswerCallback {
+        private interface RemoveAnswerCallback {
             fun removeAnswer(position: Int)
         }
-        private interface checkChangedCallback {
+        private interface CheckChangedCallback {
             fun onCheckChanged(summonHolder: AnswerHolder)
         }
     }
 
 
     private class TaskAdapter(val floatButton : FloatingActionButton,
-                              val context: Context) : RecyclerView.Adapter<TaskHolder>(), removeTaskCallback {
+                              val context: Context) : RecyclerView.Adapter<TaskHolder>(), RemoveTaskCallback {
         private var size = 1
         private val taskHolders = ArrayList<TaskHolder>()
         private var data = TaskData()
@@ -418,7 +418,7 @@ class TaskConstructorFragment() : Fragment() {
         }
     }
 
-    private interface removeTaskCallback {
+    private interface RemoveTaskCallback {
         fun removeTask(position : Int)
     }
 }

@@ -5,10 +5,7 @@ import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
 import com.android.petro.testman.R
-import com.android.petro.testman.Support.Listeners.OnTestDeletedListener
-import com.android.petro.testman.Support.Listeners.OnTestReceivedListener
-import com.android.petro.testman.Support.Listeners.OnTestSavedListener
-import com.android.petro.testman.Support.Listeners.OnTestUpdatedListener
+import com.android.petro.testman.Support.Listeners.*
 import com.google.gson.Gson
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
@@ -286,6 +283,40 @@ class Test constructor(val settings: SettingsData,
                     super.onPostExecute(result)
                     dialog.hide()
                     callback.onTestDeleted()
+                }
+            }.execute()
+        }
+
+        fun clearAnswers(testId: Int, callback: OnAnswerClearedListener, context: Context) {
+            object: AsyncTask<Void, Void, Void>() {
+                val dialog = ProgressDialog(context)
+                override fun onPreExecute() {
+                    super.onPreExecute()
+                    dialog.setTitle("TestMan")
+                    dialog.setMessage("Удаляем ответы")
+                    dialog.setCancelable(false)
+                    dialog.show()
+                }
+
+                override fun doInBackground(vararg params: Void?): Void? {
+                    val formBody = FormBody.Builder()
+                            .add("id", testId.toString())
+                            .build()
+
+                    val request = Request.Builder()
+                            .url(context.getString(R.string.server_url) + context.getString(R.string.clear_answers_by_id))
+                            .post(formBody)
+                            .build()
+
+                    val responseString = OkHttpClient().newCall(request).execute().body().string()
+                    Log.i("TestManNetwork", "Received test: $responseString")
+                    return null
+                }
+
+                override fun onPostExecute(result: Void?) {
+                    super.onPostExecute(result)
+                    dialog.hide()
+                    callback.onAnswerCleared()
                 }
             }.execute()
         }

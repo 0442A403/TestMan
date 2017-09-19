@@ -19,9 +19,9 @@ import android.widget.TextView
 import com.android.petro.testman.Activities.ChangingActivity
 import com.android.petro.testman.Activities.ResultActivity
 import com.android.petro.testman.R
+import com.android.petro.testman.Support.Listeners.OnAnswerClearedListener
 import com.android.petro.testman.Support.Listeners.OnTestDeletedListener
 import com.android.petro.testman.Support.Other.AnswerItem
-import com.android.petro.testman.Support.Other.Dictionary
 import com.android.petro.testman.Support.TestData.Test
 import com.bumptech.glide.Glide
 import com.vk.sdk.api.VKApiConst
@@ -42,7 +42,12 @@ import kotlin.collections.ArrayList
  */
 class AnswersFragment(private val data: ArrayList<AnswerItem>,
                       private val testId: Int,
-                      private val callback: OnTestDeletedListener): Fragment(), OnTestDeletedListener {
+                      private val deleteCallback: OnTestDeletedListener,
+                      private val answerClearedListener: OnAnswerClearedListener)
+    : Fragment(),
+        OnTestDeletedListener,
+        OnAnswerClearedListener {
+
     private var menu: Menu? = null
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         data.reverse()
@@ -72,11 +77,7 @@ class AnswersFragment(private val data: ArrayList<AnswerItem>,
                         object: AsyncTask<Void, Void, HashMap<Int, User>>() {
                             override fun doInBackground(vararg params: Void?): HashMap<Int, User> {
                                 for (user in vkUsers) {
-                                    var author = user.fields.getString("first_name") + " " + user.fields.getString("last_name")
-                                    val dictionary = Dictionary().dictionary
-                                    for ((key, value) in dictionary)
-                                        if (author.contains(key))
-                                            author = author.replace(key, value, false)
+                                    val author = user.fields.getString("first_name") + " " + user.fields.getString("last_name")
                                     Log.i("TestManInformation", "User photo: ${user.fields.getString("photo")}")
                                     users.put(
                                             user.fields.getInt("id"),
@@ -113,15 +114,28 @@ class AnswersFragment(private val data: ArrayList<AnswerItem>,
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.change_test__menu)
-            startActivityForResult(Intent(context, ChangingActivity::class.java).putExtra("Test id", testId), 0)
-        else
-            AlertDialog.Builder(activity)
-                    .setMessage("Удалить тест?")
-                    .setPositiveButton("ОК") { _, _ -> Test.delete(testId, context, this) }
+        when (item.itemId) {
+            R.id.change_test__menu ->
+                startActivityForResult(
+                        Intent(context, ChangingActivity::class.java)
+                                .putExtra("Test id", testId),
+                        0
+                )
+            R.id.clear_answers__menu ->
+                AlertDialog.Builder(activity)
+                    .setMessage("Удалить все ответы?")
+                    .setPositiveButton("ОК") { _, _ -> Test.clearAnswers(testId, this, context) }
                     .setNegativeButton("Отмена") { _, _ -> }
                     .create()
                     .show()
+            else ->
+                AlertDialog.Builder(activity)
+                        .setMessage("Удалить тест?")
+                        .setPositiveButton("ОК") { _, _ -> Test.delete(testId, context, this) }
+                        .setNegativeButton("Отмена") { _, _ -> }
+                        .create()
+                        .show()
+        }
         return super.onOptionsItemSelected(item)
     }
 
@@ -144,8 +158,7 @@ class AnswersFragment(private val data: ArrayList<AnswerItem>,
                                     relevantData.add(answer)
                     }
                     else {
-                        for (test in data)
-                            relevantData.add(test)
+                        relevantData += data
                     }
                     notifyDataSetChanged()
                 }
@@ -190,6 +203,10 @@ class AnswersFragment(private val data: ArrayList<AnswerItem>,
     }
 
     override fun onTestDeleted() {
-        callback.onTestDeleted()
+        deleteCallback.onTestDeleted()
+    }
+
+    override fun onAnswerCleared() {
+        answerClearedListener.onAnswerCleared()
     }
 }

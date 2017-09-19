@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">TestMan</string>
     <integer name="com_vk_sdk_AppId">6046576</integer>
-    <string name="testman_description">Пройти тесты \n легко и быстро</string>
+    <string name="testman_description">Пройти тесты\nлегко и быстро</string>
 
     <string name="login_with">Войти с помощью</string>
     <string name="exit">Выйти</string>
@@ -47,4 +47,6 @@
     <string name="my_answers">Мои ответы</string>
     <string name="delete_test">delete_test/</string>
     <string name="update_test">update_test/</string>
+    <string name="clear_answers_by_id">clear_answers_by_id/</string>
+    <string name="clearAnswers">Очистить ответы</string>
 </resources>

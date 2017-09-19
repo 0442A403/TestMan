@@ -10,10 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.petro.testman.R
-import com.android.petro.testman.Support.Listeners.OnBackPressedListener
-import com.android.petro.testman.Support.Listeners.OnDataReceivedListener
-import com.android.petro.testman.Support.Listeners.OnTestDeletedListener
-import com.android.petro.testman.Support.Listeners.OnTestSelectedListener
+import com.android.petro.testman.Support.Listeners.*
 import com.android.petro.testman.Support.Other.AnswerItem
 import com.android.petro.testman.Support.Other.TestItem
 import com.google.gson.Gson
@@ -32,9 +29,10 @@ class MyTestsControlFragment:
         OnTestSelectedListener,
         OnDataReceivedListener,
         OnBackPressedListener,
-        OnTestDeletedListener {
+        OnTestDeletedListener,
+        OnAnswerClearedListener{
 
-    private val testFragment: MyTestsFragment = MyTestsFragment(this, this)
+    private val testFragment: MyTestsFragment = MyTestsFragment(this, this, this)
     private var mActualWindow: MActualWindow? = null
 
     init {
@@ -79,6 +77,10 @@ class MyTestsControlFragment:
     }
 
     override fun onTestDeleted() {
+        changeFragment(MActualWindow.TESTS, null)
+    }
+
+    override fun onAnswerCleared() {
         changeFragment(MActualWindow.TESTS, null)
     }
 

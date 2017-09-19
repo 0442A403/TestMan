@@ -245,31 +245,34 @@ class SolveActivity : AppCompatActivity(), OnAnswerSavedListener, OnTestReceived
             override fun getItemCount() = count
 
             override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): AnswerHolder {
-                val holder = AnswerHolder(LayoutInflater.from(parent!!.context).inflate(R.layout.solve_answer_layout, parent, false), type, this)
+                val layout = LayoutInflater.from(parent!!.context).inflate(R.layout.solve_answer_layout, parent, false)
+                layout.radio_button__solve.isClickable = true
+                layout.check_box__solve.isClickable = true
+                val holder = AnswerHolder(layout, type, this)
                 answers.add(holder)
                 return holder
             }
 
             fun getAnswer(): Any {
                 if (type == TaskType.RADIO_BOX.code) {
-                    for (i in 0 .. answers.size - 1)
+                    for (i in 0 until answers.size)
                         if (answers.get(i).isChecked())
                             return random[i]
                     return -1
                 }
                 else /*if (task!!.type == TaskType.CHECK_BOX.code)*/ {
                     val answerList = ArrayList<Int>()
-                    for (i in 0 .. answers.size - 1)
-                        if (answers.get(i).isChecked())
-                            answerList.add(random[i])
+                    (0 until answers.size)
+                            .filter { answers[it].isChecked() }
+                            .mapTo(answerList) { random[it] }
                     return answerList
                 }
             }
 
             override fun onCheckChanged(summonHolder: AnswerHolder) {
-                for (holder in answers)
-                    if (holder != summonHolder)
-                        holder.removeChecked()
+                answers
+                        .filter { it != summonHolder }
+                        .forEach { it.removeChecked() }
             }
         }
 

@@ -9,6 +9,7 @@
         android:id="@+id/radio_button__solve"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         app:layout_constraintTop_toTopOf="@+id/answer__solve"
         app:layout_constraintBottom_toBottomOf="@+id/answer__solve"
         app:layout_constraintLeft_toLeftOf="parent" />
@@ -18,6 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:clickable="false"
         app:layout_constraintBottom_toBottomOf="@+id/answer__solve"
         app:layout_constraintTop_toTopOf="@+id/answer__solve"
         app:layout_constraintLeft_toRightOf="@+id/radio_button__solve" />

@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import com.android.petro.testman.R
+import com.android.petro.testman.Support.Listeners.OnAnswerClearedListener
 import com.android.petro.testman.Support.Listeners.OnTestDeletedListener
 import com.android.petro.testman.Support.Listeners.OnTestSelectedListener
 import com.android.petro.testman.Support.Other.TestItem
@@ -27,12 +28,13 @@ import kotlin.collections.ArrayList
  * Fragment for viewing user's tests
  */
 class MyTestsFragment(private val callback: OnTestSelectedListener,
-                      private val onTestDeletedListener: OnTestDeletedListener): Fragment() {
+                      private val onTestDeletedListener: OnTestDeletedListener,
+                      private val onAnswerClearedListener: OnAnswerClearedListener): Fragment() {
     private var adapter: TaskAdapter? = null
     private var menu: Menu? = null
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater!!.inflate(R.layout.fragment_search, container, false)
-        adapter = TaskAdapter(callback, view.edit_text__search, onTestDeletedListener)
+        adapter = TaskAdapter(callback, view.edit_text__search, onTestDeletedListener, onAnswerClearedListener)
         val recyclerView = view.recycler_view__search
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -46,7 +48,8 @@ class MyTestsFragment(private val callback: OnTestSelectedListener,
 
     private class TaskAdapter(private val callback: OnTestSelectedListener,
                               searchField: EditText,
-                              private val onTestDeletedListener: OnTestDeletedListener): RecyclerView.Adapter<TestHolder>() {
+                              private val onTestDeletedListener: OnTestDeletedListener,
+                              private val onAnswerClearedListener: OnAnswerClearedListener): RecyclerView.Adapter<TestHolder>() {
         private var relevantData: ArrayList<TestItem> = ArrayList()
         var data: ArrayList<TestItem> = ArrayList()
             set(value) {
@@ -91,7 +94,7 @@ class MyTestsFragment(private val callback: OnTestSelectedListener,
                     else
                         "0.0"
             holder.view.setOnClickListener {
-                callback.onTestSelected(AnswersFragment(relevantData[position].answers, relevantData[position].testId, onTestDeletedListener))
+                callback.onTestSelected(AnswersFragment(relevantData[position].answers, relevantData[position].testId, onTestDeletedListener, onAnswerClearedListener))
             }
         }
 

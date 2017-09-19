@@ -162,7 +162,7 @@ class SettingsFragment(private val onTestSaveListener: OnTestSaveListener,
                 .setPositiveButton("ОК") {
                     _, _ ->
                     if (isChanging)
-                        onTestUpdateListener.OnTestUpdate(getData())
+                        onTestUpdateListener.onTestUpdated(getData())
                     else
                         onTestSaveListener.onTestSaving(getData())
                 }

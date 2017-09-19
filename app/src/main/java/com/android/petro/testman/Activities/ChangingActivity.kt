@@ -25,7 +25,6 @@ class ChangingActivity:
     }
 
     override fun onTestSaved() {
-
     }
 
     override fun onTestReceived(test: Test) {

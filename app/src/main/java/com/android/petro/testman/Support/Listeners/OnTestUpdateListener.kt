@@ -7,6 +7,6 @@ import com.android.petro.testman.Support.TestData.SettingsData
  * Callback for updating tests
  */
 interface OnTestUpdateListener: OnTestUpdatedListener, HasEmpty {
-    fun OnTestUpdate(settings: SettingsData)
+    fun onTestUpdated(settings: SettingsData)
     fun checkTasksHasBeenChanged(): Boolean
 }

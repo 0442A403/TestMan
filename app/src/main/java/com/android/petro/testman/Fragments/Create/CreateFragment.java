@@ -28,14 +28,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Fragment for creating new tests
+ * Fragment that creates new tests
  */
 
 public class CreateFragment extends Fragment implements OnTestSaveListener, OnTestUpdateListener {
     private FragmentManager fragmentManager = null;
     private ViewPager pager = null;
     private TaskConstructorFragment constructorFragment = null;
-    private SettingsFragment settingsFragment = null;
     private OnTestSavedListener onTestSavedListener = null;
     private OnTestUpdatedListener onTestUpdatedListener = null;
     private Test test = null;
@@ -70,6 +69,7 @@ public class CreateFragment extends Fragment implements OnTestSaveListener, OnTe
 
     private void setUpViaAdapter() {
         Adapter adapter = new Adapter(fragmentManager);
+        SettingsFragment settingsFragment;
         if (test == null) {
             constructorFragment = new TaskConstructorFragment();
             settingsFragment = new SettingsFragment(this, this, false);
@@ -108,7 +108,7 @@ public class CreateFragment extends Fragment implements OnTestSaveListener, OnTe
     }
 
     @Override
-    public void OnTestUpdate(@NonNull SettingsData settings) {
+    public void onTestUpdated(@NonNull SettingsData settings) {
         TaskData taskData = constructorFragment.getData();
         assert taskData != null;
         Test test = new Test(settings, taskData, getActivity());
