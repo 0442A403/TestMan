@@ -1,5 +1,6 @@
 package com.android.petro.testman.Fragments.Create
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -23,9 +24,11 @@ import kotlin.properties.Delegates
  * Fragment for test's settings
  */
 
-class SettingsFragment(private val onTestSaveListener: OnTestSaveListener,
-                       private val onTestUpdateListener: OnTestUpdateListener,
-                       private val isChanging: Boolean = false) : Fragment() {
+@SuppressLint("ValidFragment")
+class SettingsFragment
+@SuppressLint("ValidFragment") constructor(private val onTestSaveListener: OnTestSaveListener,
+                                           private val onTestUpdateListener: OnTestUpdateListener,
+                                           private val isChanging: Boolean = false) : Fragment() {
 
     private var layout: FrameLayout by Delegates.notNull()
     private val EMPTY_NAME = 1
@@ -38,10 +41,10 @@ class SettingsFragment(private val onTestSaveListener: OnTestSaveListener,
         settings = fillSettings
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        layout = inflater!!.inflate(R.layout.fragment_settings, container, false) as FrameLayout
+        layout = inflater.inflate(R.layout.fragment_settings, container, false) as FrameLayout
 
         val five = layout.seekbar__five
         val four = layout.seekbar__four
@@ -49,7 +52,7 @@ class SettingsFragment(private val onTestSaveListener: OnTestSaveListener,
         val fiveIndicator = layout.seekbar_indicator__five
         val fourIndicator = layout.seekbar_indicator__four
         val threeIndicator = layout.seekbar_indicator__three
-        val preferences = context.getSharedPreferences("AppPref", Context.MODE_PRIVATE)
+        val preferences = context!!.getSharedPreferences("AppPref", Context.MODE_PRIVATE)
 
         five.onProgressChanged {
             progress, _ ->
@@ -94,7 +97,7 @@ class SettingsFragment(private val onTestSaveListener: OnTestSaveListener,
                 timerWrapper.visibility = View.VISIBLE
             else {
                 timerWrapper.visibility = View.GONE
-                (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
+                (context!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
                         .hideSoftInputFromWindow(layout.windowToken, 0)
             }
         }
@@ -105,8 +108,8 @@ class SettingsFragment(private val onTestSaveListener: OnTestSaveListener,
         minute.setOnEditorActionListener { _, _, _ -> second.requestFocus() }
         second.textWatcher {
             onTextChanged { _, _, _, _ ->
-                if (second.text.length == 2 && second.text.toString().toInt() > 59) {
-                    second.setText(second.text.substring(0..0))
+                if (second.text?.length == 2 && second.text.toString().toInt() > 59) {
+                    second.setText(second.text?.substring(0..0))
                     second.setSelection(1)
                 }
             }
@@ -157,7 +160,7 @@ class SettingsFragment(private val onTestSaveListener: OnTestSaveListener,
     }
 
     private fun dialogBox(message: String) {
-        AlertDialog.Builder(activity)
+        AlertDialog.Builder(activity!!)
                 .setMessage(message)
                 .setPositiveButton("ОК") {
                     _, _ ->

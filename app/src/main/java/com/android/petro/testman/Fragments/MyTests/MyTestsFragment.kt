@@ -1,5 +1,6 @@
 package com.android.petro.testman.Fragments.MyTests
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -27,13 +28,14 @@ import kotlin.collections.ArrayList
  * Created by petro on 23.08.2017.
  * Fragment for viewing user's tests
  */
-class MyTestsFragment(private val callback: OnTestSelectedListener,
-                      private val onTestDeletedListener: OnTestDeletedListener,
-                      private val onAnswerClearedListener: OnAnswerClearedListener): Fragment() {
+@SuppressLint("ValidFragment")
+class MyTestsFragment @SuppressLint("ValidFragment") constructor(private val callback: OnTestSelectedListener,
+                                                                 private val onTestDeletedListener: OnTestDeletedListener,
+                                                                 private val onAnswerClearedListener: OnAnswerClearedListener): Fragment() {
     private var adapter: TaskAdapter? = null
     private var menu: Menu? = null
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater!!.inflate(R.layout.fragment_search, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_search, container, false)
         adapter = TaskAdapter(callback, view.edit_text__search, onTestDeletedListener, onAnswerClearedListener)
         val recyclerView = view.recycler_view__search
         recyclerView.adapter = adapter
@@ -81,8 +83,8 @@ class MyTestsFragment(private val callback: OnTestSelectedListener,
             })
         }
 
-        override fun onBindViewHolder(holder: TestHolder?, position: Int) {
-            holder!!.name.text = relevantData[position].testName
+        override fun onBindViewHolder(holder: TestHolder, position: Int) {
+            holder.name.text = relevantData[position].testName
             val dv = relevantData[position].date * 1000
             val df = Date(dv)
             holder.date.text = SimpleDateFormat("MM dd, yyyy hh:mma", Locale.getDefault()).format(df)
@@ -98,8 +100,8 @@ class MyTestsFragment(private val callback: OnTestSelectedListener,
             }
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TestHolder =
-                TestHolder(LayoutInflater.from(parent!!.context).inflate(R.layout.my_test_item, parent, false))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TestHolder =
+                TestHolder(LayoutInflater.from(parent.context).inflate(R.layout.my_test_item, parent, false))
 
         override fun getItemCount(): Int = relevantData.size
     }

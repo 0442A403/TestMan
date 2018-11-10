@@ -39,10 +39,10 @@ class MyTestsControlFragment:
         testFragment.retainInstance = true
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         changeFragment(MActualWindow.TESTS, null)
-        GetData(this, context).execute()
+        GetData(this, context!!).execute()
         return inflater!!.inflate(R.layout.fragment_my_tests, container, false)
     }
 
@@ -50,7 +50,7 @@ class MyTestsControlFragment:
         mActualWindow = window
         when (window) {
             MActualWindow.TESTS -> {
-                GetData(this, context).execute()
+                GetData(this, context!!).execute()
                 childFragmentManager.beginTransaction()
                         .replace(R.id.frame_layout__my_tests, testFragment).commit()
             }
@@ -111,7 +111,7 @@ class MyTestsControlFragment:
                     .post(formBody)
                     .build()
 
-            val responseString = OkHttpClient().newCall(request).execute().body().string()
+            val responseString = OkHttpClient().newCall(request).execute().body()!!.string()
             Log.i("TestManNetwork", responseString)
 
             val array = ArrayList<TestItem>()

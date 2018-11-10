@@ -64,7 +64,7 @@ class Test constructor(val settings: SettingsData,
                         .build()
 
                 val response = OkHttpClient().newCall(request).execute()
-                Log.v("TestManNetwork", response.body().string())
+                Log.v("TestManNetwork", response.body()!!.string())
 
                 return null
             }
@@ -111,7 +111,7 @@ class Test constructor(val settings: SettingsData,
                         .build()
 
                 val response = OkHttpClient().newCall(request).execute()
-                Log.v("TestManNetwork", response.body().string())
+                Log.v("TestManNetwork", response.body()!!.string())
 
                 return null
             }
@@ -150,7 +150,7 @@ class Test constructor(val settings: SettingsData,
                             .post(formBody)
                             .build()
 
-                    val responseString = OkHttpClient().newCall(request).execute().body().string()
+                    val responseString = OkHttpClient().newCall(request).execute().body()!!.string()
                     Log.i("TestManNetwork", "Received test: $responseString")
                     val jsonObject = JSONObject(responseString)
                     val response = jsonObject.getJSONArray("test").getJSONObject(0).toString()
@@ -194,7 +194,7 @@ class Test constructor(val settings: SettingsData,
                             .post(formBody)
                             .build()
 
-                    val responseString = OkHttpClient().newCall(request).execute().body().string()
+                    val responseString = OkHttpClient().newCall(request).execute().body()!!.string()
                     Log.i("TestManNetwork", "Received test: $responseString")
                     val gson = Gson()
                     val settings = gson.fromJson(responseString, SettingsData::class.java)
@@ -234,7 +234,7 @@ class Test constructor(val settings: SettingsData,
                             .post(formBody)
                             .build()
 
-                    val responseString = OkHttpClient().newCall(request).execute().body().string()
+                    val responseString = OkHttpClient().newCall(request).execute().body()!!.string()
                     Log.i("TestManNetwork", "Received test: $responseString")
                     val gson = Gson()
                     val settings = gson.fromJson(responseString, SettingsData::class.java)
@@ -274,7 +274,7 @@ class Test constructor(val settings: SettingsData,
                             .post(formBody)
                             .build()
 
-                    val responseString = OkHttpClient().newCall(request).execute().body().string()
+                    val responseString = OkHttpClient().newCall(request).execute().body()!!.string()
                     Log.i("TestManNetwork", "Received test: $responseString")
                     return null
                 }
@@ -308,7 +308,7 @@ class Test constructor(val settings: SettingsData,
                             .post(formBody)
                             .build()
 
-                    val responseString = OkHttpClient().newCall(request).execute().body().string()
+                    val responseString = OkHttpClient().newCall(request).execute().body()!!.string()
                     Log.i("TestManNetwork", "Received test: $responseString")
                     return null
                 }

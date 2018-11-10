@@ -40,13 +40,13 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
     private val testData: ArrayList<Test> = ArrayList()
     private val relevantTestData: ArrayList<Test> = ArrayList()
     private var adapter: TestAdapter? = null
-    override fun onCreateView(inflater: LayoutInflater?,
+    override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view: View = inflater!!.inflate(R.layout.fragment_search, container, false)
+        val view: View = inflater.inflate(R.layout.fragment_search, container, false)
         adapter = TestAdapter(relevantTestData,
                 testData,
-                activity,
+                activity!!,
                 view.edit_text__search!!)
 
         val recycleView = view.recycler_view__search
@@ -57,7 +57,7 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
     }
 
     private fun updateData() {
-        GetData(activity, this).execute()
+        GetData(activity!!, this).execute()
     }
 
     override fun onUpdatedData(array: JSONArray?) {
@@ -113,8 +113,8 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
             })
         }
 
-        override fun onBindViewHolder(holder: TestHolder?, position: Int) {
-            holder!!.testName.text = relevantTestData[position].name
+        override fun onBindViewHolder(holder: TestHolder, position: Int) {
+            holder.testName.text = relevantTestData[position].name
             holder.testAuthor.text =
                     users[relevantTestData[position].authorId]!!.name
             Glide.with(activity)
@@ -131,9 +131,9 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
             }
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TestHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TestHolder {
             return TestHolder(
-                    LayoutInflater.from(parent!!.context)
+                    LayoutInflater.from(parent.context)
                             .inflate(R.layout.item_with_image, parent, false))
         }
 
@@ -197,7 +197,7 @@ class SearchFragment : Fragment(), OnUpdatedDataListener {
                                         + context.resources.getString(R.string.get_all_tests))
                                 .get()
                                 .build())
-                        .execute().body().string()
+                        .execute().body()!!.string()
                 Log.v("TestManNetwork", str)
                 try {
                     tests = JSONArray(str)

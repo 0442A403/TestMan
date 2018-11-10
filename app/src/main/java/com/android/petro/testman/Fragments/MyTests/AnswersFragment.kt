@@ -1,5 +1,6 @@
 package com.android.petro.testman.Fragments.MyTests
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -40,18 +41,19 @@ import kotlin.collections.ArrayList
  * Created by petro on 23.08.2017.
  * Fragment for viewing user's current test's answers
  */
-class AnswersFragment(private val data: ArrayList<AnswerItem>,
-                      private val testId: Int,
-                      private val deleteCallback: OnTestDeletedListener,
-                      private val answerClearedListener: OnAnswerClearedListener)
+@SuppressLint("ValidFragment")
+class AnswersFragment @SuppressLint("ValidFragment") constructor(private val data: ArrayList<AnswerItem>,
+                                                                 private val testId: Int,
+                                                                 private val deleteCallback: OnTestDeletedListener,
+                                                                 private val answerClearedListener: OnAnswerClearedListener)
     : Fragment(),
         OnTestDeletedListener,
         OnAnswerClearedListener {
 
     private var menu: Menu? = null
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         data.reverse()
-        val view = inflater!!.inflate(R.layout.fragment_search, container, false)
+        val view = inflater.inflate(R.layout.fragment_search, container, false)
         val recyclerView = view.recycler_view__search
         recyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -97,8 +99,8 @@ class AnswersFragment(private val data: ArrayList<AnswerItem>,
 
                             override fun onPostExecute(users: HashMap<Int, User>) {
                                 super.onPostExecute(users)
-                                recyclerView.adapter = AnswerAdapter(data, users, context, view.edit_text__search)
-                                recyclerView.adapter.notifyDataSetChanged()
+                                recyclerView.adapter = AnswerAdapter(data, users, context!!, view.edit_text__search)
+                                (recyclerView.adapter as AnswerAdapter).notifyDataSetChanged()
                             }
                         }.execute()
                     }
@@ -122,16 +124,16 @@ class AnswersFragment(private val data: ArrayList<AnswerItem>,
                         0
                 )
             R.id.clear_answers__menu ->
-                AlertDialog.Builder(activity)
+                AlertDialog.Builder(activity!!)
                     .setMessage("Удалить все ответы?")
-                    .setPositiveButton("ОК") { _, _ -> Test.clearAnswers(testId, this, context) }
+                    .setPositiveButton("ОК") { _, _ -> Test.clearAnswers(testId, this, context!!) }
                     .setNegativeButton("Отмена") { _, _ -> }
                     .create()
                     .show()
             else ->
-                AlertDialog.Builder(activity)
+                AlertDialog.Builder(activity!!)
                         .setMessage("Удалить тест?")
-                        .setPositiveButton("ОК") { _, _ -> Test.delete(testId, context, this) }
+                        .setPositiveButton("ОК") { _, _ -> Test.delete(testId, context!!, this) }
                         .setNegativeButton("Отмена") { _, _ -> }
                         .create()
                         .show()
@@ -166,9 +168,9 @@ class AnswersFragment(private val data: ArrayList<AnswerItem>,
             })
         }
 
-        override fun onBindViewHolder(holder: AnswerHolder?, position: Int) {
+        override fun onBindViewHolder(holder: AnswerHolder, position: Int) {
             val user = users[relevantData[position].author]
-            holder!!.image.setImageBitmap(user!!.bitmap)
+            holder.image.setImageBitmap(user!!.bitmap)
             holder.author.text = users[relevantData[position].author]!!.name
             holder.date.text = SimpleDateFormat("MM dd, yyyy hh:mma", Locale.getDefault()).format(relevantData[position].date * 1000)
             holder.view.setOnClickListener {
@@ -181,8 +183,8 @@ class AnswersFragment(private val data: ArrayList<AnswerItem>,
             holder.mark.visibility = View.VISIBLE
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): AnswerHolder =
-                AnswerHolder(LayoutInflater.from(parent!!.context).inflate(R.layout.item_with_image, parent, false))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AnswerHolder =
+                AnswerHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_with_image, parent, false))
 
         override fun getItemCount(): Int = relevantData.size
     }

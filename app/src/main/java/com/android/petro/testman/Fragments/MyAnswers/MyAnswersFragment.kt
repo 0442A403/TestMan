@@ -41,12 +41,12 @@ import kotlin.collections.HashMap
  */
 
 class MyAnswersFragment: Fragment() {
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val inflatedView = inflater!!.inflate(R.layout.fragment_search, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val inflatedView = inflater.inflate(R.layout.fragment_search, container, false)
         val recyclerView = inflatedView.recycler_view__search
         recyclerView.setHasFixedSize(true)
         recyclerView!!.layoutManager = LinearLayoutManager(context)
-        GetData(recyclerView, activity).execute(context.getSharedPreferences("AppPref", Context.MODE_PRIVATE).getInt("VKId", -1))
+        GetData(recyclerView, activity!!).execute(context!!.getSharedPreferences("AppPref", Context.MODE_PRIVATE).getInt("VKId", -1))
         return inflatedView
     }
 
@@ -88,7 +88,7 @@ class MyAnswersFragment: Fragment() {
 
 
         override fun onBindViewHolder(holder: AnswerHolder, position: Int) {
-            holder.setData(data[position], usersImages[data[position].test_author]!!)
+            holder.setData(data[position], if (usersImages[data[position].test_author] != null) usersImages[data[position].test_author]!! else UserWithImage("", null))
         }
 
         override fun getItemCount(): Int = data.size
@@ -120,7 +120,7 @@ class MyAnswersFragment: Fragment() {
                     .post(formBody)
                     .build()
 
-            val responseString = OkHttpClient().newCall(request).execute().body().string()
+            val responseString = OkHttpClient().newCall(request).execute().body()!!.string()
             Log.v("TestManNetwork", responseString)
 
             try {
@@ -181,7 +181,7 @@ class MyAnswersFragment: Fragment() {
                                                 dialog.hide()
                                                 data.reverse()
                                                 recyclerView.adapter = AnswerAdapter(data, users, activity)
-                                                recyclerView.adapter.notifyDataSetChanged()
+                                                (recyclerView.adapter as AnswerAdapter).notifyDataSetChanged()
                                             }
                                         }.execute()
                                     }
@@ -210,5 +210,5 @@ class MyAnswersFragment: Fragment() {
                                     val imageLink: String)
 
     private class UserWithImage(val name: String,
-                                val image: Bitmap)
+                                val image: Bitmap?)
 }

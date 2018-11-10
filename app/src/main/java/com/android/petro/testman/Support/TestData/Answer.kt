@@ -97,7 +97,7 @@ class Answer(private val id: Int,
                             .post(body)
                             .build()
 
-                    return OkHttpClient().newCall(request).execute().body().string()
+                    return OkHttpClient().newCall(request).execute().body()!!.string()
                 }
                 override fun onPostExecute(result: String?) {
                     super.onPostExecute(result)
@@ -133,7 +133,7 @@ class Answer(private val id: Int,
                             .post(formBody)
                             .build()
 
-                    val responseString = OkHttpClient().newCall(request).execute().body().string()
+                    val responseString = OkHttpClient().newCall(request).execute().body()!!.string()
                     Log.i("TestManNetwork", "ReceivedAnswer: $responseString")
 
                     val gson = Gson()

@@ -1,5 +1,6 @@
 package com.android.petro.testman.Activities
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -76,7 +77,7 @@ class ResultActivity : AppCompatActivity(), OnAnswerReceivedListener, OnTestRece
         }
 
         fun notifyDataSetChanged() {
-            recyclerView.adapter.notifyDataSetChanged()
+            recyclerView.adapter?.notifyDataSetChanged()
         }
 
         private class AnswerAdapter(private val answerStrings: ArrayList<String>,
@@ -84,11 +85,13 @@ class ResultActivity : AppCompatActivity(), OnAnswerReceivedListener, OnTestRece
                                     private val studentAnswer: Any,
                                     private val type: TaskType,
                                     private val context: Context): RecyclerView.Adapter<AnswerHolder>() {
-            override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): AnswerHolder =
-                    AnswerHolder(LayoutInflater.from(parent!!.context).inflate(R.layout.solve_answer_layout, parent, false))
 
-            override fun onBindViewHolder(holder: AnswerHolder?, position: Int) {
-                holder!!.answer.text = answerStrings[position]
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AnswerHolder =
+                    AnswerHolder(LayoutInflater.from(parent.context).inflate(R.layout.solve_answer_layout, parent, false))
+
+            @SuppressLint("RestrictedApi")
+            override fun onBindViewHolder(holder: AnswerHolder, position: Int) {
+                holder.answer.text = answerStrings[position]
                 when (type) {
                     TaskType.RADIO_BOX -> {
                         if ((right as Double == position.toDouble()) == (((studentAnswer as? Double)?.toInt() ?: studentAnswer as Int) == position))
@@ -153,8 +156,8 @@ class ResultActivity : AppCompatActivity(), OnAnswerReceivedListener, OnTestRece
             holder.notifyDataSetChanged()
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TaskHolder =
-                TaskHolder(LayoutInflater.from(parent!!.context).inflate(R.layout.task_card, parent, false), context)
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskHolder =
+                TaskHolder(LayoutInflater.from(parent.context).inflate(R.layout.task_card, parent, false), context)
 
         override fun getItemCount(): Int = tasks.size
 

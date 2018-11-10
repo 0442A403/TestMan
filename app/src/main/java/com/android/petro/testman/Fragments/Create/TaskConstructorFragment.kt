@@ -1,5 +1,6 @@
 package com.android.petro.testman.Fragments.Create
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
@@ -24,6 +25,7 @@ import kotlinx.android.synthetic.main.task_settings_layout.view.*
 class TaskConstructorFragment() : Fragment() {
     private var taskAdapter : TaskAdapter? = null
     private var fillTaskData: TaskData? = null
+    @SuppressLint("ValidFragment")
     constructor(fillTaskData: TaskData): this() {
         val tasks = ArrayList<TaskClass>()
         for (task in fillTaskData.tasks) {
@@ -45,16 +47,16 @@ class TaskConstructorFragment() : Fragment() {
         this.fillTaskData = TaskData(tasks)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater!!.inflate(R.layout.fragment_tasks, container, false)
+        val view = inflater.inflate(R.layout.fragment_tasks, container, false)
 
         val taskRecycle = view.findViewById(R.id.create_recycle_view) as RecyclerView
 
         val floatButton = view.findViewById(R.id.add_task_button) as FloatingActionButton
         floatButton.setOnClickListener { addTask() }
         taskRecycle.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0)
                     floatButton.hide()
                 else if (dy != 0)
@@ -63,9 +65,9 @@ class TaskConstructorFragment() : Fragment() {
         })
 
         taskAdapter = if (fillTaskData != null)
-            TaskAdapter(floatButton, activity, fillTaskData!!)
+            TaskAdapter(floatButton, activity!!, fillTaskData!!)
         else
-            TaskAdapter(floatButton, activity)
+            TaskAdapter(floatButton, activity!!)
         taskRecycle.adapter = taskAdapter
         taskRecycle.layoutManager = LinearLayoutManager(activity)
 
@@ -244,8 +246,8 @@ class TaskConstructorFragment() : Fragment() {
             private var data = ArrayList<String>()
             private var type = TaskType.RADIO_BOX.code
             private var rights : Any = -1
-            override fun onBindViewHolder(holder: AnswerHolder?, position: Int) {
-                holder!!.answerPosition = position
+            override fun onBindViewHolder(holder: AnswerHolder, position: Int) {
+                holder.answerPosition = position
                 if (position < data.size)
                     holder.setData(data[position],
                             type,
@@ -262,8 +264,8 @@ class TaskConstructorFragment() : Fragment() {
                 holder.changeInput(TaskType.getTypeByCode(type))
             }
 
-            override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): AnswerHolder {
-                return AnswerHolder(LayoutInflater.from(parent!!.context)
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AnswerHolder {
+                return AnswerHolder(LayoutInflater.from(parent.context)
                         .inflate(R.layout.creating_answer_pattern, parent, false), this, this)
             }
 
@@ -370,9 +372,9 @@ class TaskConstructorFragment() : Fragment() {
             size = fillTaskData.tasks.size
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TaskHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskHolder {
             return TaskHolder(
-                    LayoutInflater.from(parent!!.context)
+                    LayoutInflater.from(parent.context)
                             .inflate(R.layout.creating_task_pattern, parent, false),
                     this,
                     floatButton,
@@ -381,8 +383,8 @@ class TaskConstructorFragment() : Fragment() {
 
         override fun getItemCount(): Int = size
 
-        override fun onBindViewHolder(holder: TaskHolder?, position: Int) {
-            holder!!.taskPosition = position
+        override fun onBindViewHolder(holder: TaskHolder, position: Int) {
+            holder.taskPosition = position
             if (position < data.tasks.size)
                 holder.setData(data.tasks[position])
             else

@@ -1,5 +1,4 @@
 package com.android.petro.testman.Activities
-
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -16,13 +15,11 @@ import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.TextView
-import com.android.petro.testman.R
 import com.android.petro.testman.Support.Listeners.OnAnswerSavedListener
 import com.android.petro.testman.Support.Listeners.OnTestReceivedListener
 import com.android.petro.testman.Support.TestData.*
 import com.google.gson.Gson
 import com.transitionseverywhere.*
-import com.transitionseverywhere.extra.Scale
 import kotlinx.android.synthetic.main.activity_solve.*
 import kotlinx.android.synthetic.main.solve_answer_layout.view.*
 import kotlinx.android.synthetic.main.task_card.view.*
@@ -38,7 +35,7 @@ class SolveActivity : AppCompatActivity(), OnAnswerSavedListener, OnTestReceived
     private var testId: Int = -1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_solve)
+        setContentView(com.android.petro.testman.R.layout.activity_solve)
         setSupportActionBar(toolbar_solve)
         title = intent.getStringExtra("name")
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -61,36 +58,37 @@ class SolveActivity : AppCompatActivity(), OnAnswerSavedListener, OnTestReceived
     private fun startTest() {
         solve_content_layout.visibility = View.VISIBLE
 
+
         val set = TransitionSet()
-                .addTransition(Scale(0.7f))
+                .addTransition(com.transitionseverywhere.extra.Scale(0.7f))
                 .addTransition(Fade())
                 .setInterpolator(LinearOutSlowInInterpolator())
 
         //removing test name
-        TransitionManager.beginDelayedTransition(test_name__entry__wrapper, set)
+        com.transitionseverywhere.TransitionManager.beginDelayedTransition(test_name__entry__wrapper, set)
         test_name__entry.visibility = View.GONE
 
         //removing button start
-        TransitionManager.beginDelayedTransition(start_solving__wrapper, set)
+        com.transitionseverywhere.TransitionManager.beginDelayedTransition(start_solving__wrapper, set)
         start_solving.visibility = View.GONE
 
         //moving timer to right bottom angle
-        TransitionManager.beginDelayedTransition(solve_frame_layout,
+        com.transitionseverywhere.TransitionManager.beginDelayedTransition(solve_frame_layout,
                 ChangeBounds().setPathMotion(ArcMotion()).setDuration(1000))
         val params = solve_entry_wrapper.layoutParams as FrameLayout.LayoutParams
         params.gravity = Gravity.BOTTOM or Gravity.END
         solve_entry_wrapper.layoutParams = params
 
         //changing phone
-        TransitionManager.beginDelayedTransition(primary_color_container,
+        com.transitionseverywhere.TransitionManager.beginDelayedTransition(primary_color_container,
                 Recolor().setDuration(1000))
         primary_color_container.background =
-                ColorDrawable(ContextCompat.getColor(this, R.color.transparent))
+                ColorDrawable(ContextCompat.getColor(this, com.android.petro.testman.R.color.transparent))
 
         //changing timer's text color
-        TransitionManager.beginDelayedTransition(solve_timer__wrapper,
+        com.transitionseverywhere.TransitionManager.beginDelayedTransition(solve_timer__wrapper,
                 Recolor().setDuration(1000))
-        solve_timer.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary))
+        solve_timer.setTextColor(ContextCompat.getColor(this, com.android.petro.testman.R.color.colorPrimary))
 
         object : AsyncTask<Void, Void, Void>() {
             override fun doInBackground(vararg mParams: Void?): Void? {
@@ -213,10 +211,10 @@ class SolveActivity : AppCompatActivity(), OnAnswerSavedListener, OnTestReceived
             }
 
             fun isChecked(): Boolean {
-                if (radioButton.visibility == View.VISIBLE)
-                    return radioButton.isChecked
+                return if (radioButton.visibility == View.VISIBLE)
+                    radioButton.isChecked
                 else
-                    return checkBox.isChecked
+                    checkBox.isChecked
             }
         }
 
@@ -238,14 +236,14 @@ class SolveActivity : AppCompatActivity(), OnAnswerSavedListener, OnTestReceived
                 }
             }
 
-            override fun onBindViewHolder(holder: AnswerHolder?, position: Int) {
-                holder!!.setData(data[random[position]], type)
+            override fun onBindViewHolder(holder: AnswerHolder, position: Int) {
+                holder.setData(data[random[position]], type)
             }
 
             override fun getItemCount() = count
 
-            override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): AnswerHolder {
-                val layout = LayoutInflater.from(parent!!.context).inflate(R.layout.solve_answer_layout, parent, false)
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AnswerHolder {
+                val layout = LayoutInflater.from(parent.context).inflate(com.android.petro.testman.R.layout.solve_answer_layout, parent, false)
                 layout.radio_button__solve.isClickable = true
                 layout.check_box__solve.isClickable = true
                 val holder = AnswerHolder(layout, type, this)
@@ -285,12 +283,12 @@ class SolveActivity : AppCompatActivity(), OnAnswerSavedListener, OnTestReceived
                               val context: Context): RecyclerView.Adapter<TaskHolder>() {
         private val count = data.tasks.size
         private val taskHolders = ArrayList<TaskHolder>()
-        override fun onBindViewHolder(holder: TaskHolder?, position: Int) {
-            holder!!.setData(data.tasks[position], context)
+        override fun onBindViewHolder(holder: TaskHolder, position: Int) {
+            holder.setData(data.tasks[position], context)
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TaskHolder {
-            val holder = TaskHolder(LayoutInflater.from(parent!!.context).inflate(R.layout.task_card, parent, false))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskHolder {
+            val holder = TaskHolder(LayoutInflater.from(parent.context).inflate(com.android.petro.testman.R.layout.task_card, parent, false))
             taskHolders.add(holder)
             return holder
         }
@@ -305,7 +303,7 @@ class SolveActivity : AppCompatActivity(), OnAnswerSavedListener, OnTestReceived
         override fun getItemCount() = count
     }
 
-    inner private class Timer(time: Long, periodicity: Long, private val timer: TextView): CountDownTimer(time, periodicity) {
+    private inner class Timer(time: Long, periodicity: Long, private val timer: TextView): CountDownTimer(time, periodicity) {
         var time: Long = -1
         override fun onTick(millisUntilFinished: Long) {
             time = millisUntilFinished
